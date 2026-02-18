@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | moloKo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/admin-login.css') }}">
+</head>
+<body class="admin-login-page">
+<div class="admin-login-shell">
+    <div class="admin-login-card">
+        <a href="{{ path('home') }}" class="admin-login-brand">
+            <span class="admin-login-brand__dot"></span>
+            <span>molo<span class="admin-login-brand__k">K</span>o</span>
+        </a>
+
+        <div class="admin-login-copy">
+            <p class="admin-login-copy__kicker">Area amministrazione</p>
+            <h1>Accesso riservato allo staff admin</h1>
+            <p>Gestisci utenti, drink, categorie cibi ed eventi in un unico pannello.</p>
+        </div>
+
+        {% if error %}
+            <div class="admin-login-error">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        <form method="post" action="{{ path('app_login') }}" class="admin-login-form">
+            <label for="username">Email o username</label>
+            <input type="text" id="username" name="_username" value="{{ last_username }}" autocomplete="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="_password" autocomplete="current-password" required>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit">Accedi alla dashboard</button>
+        </form>
+
+        <p class="admin-login-back">
+            <a href="{{ path('home') }}">Torna al sito pubblico</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
