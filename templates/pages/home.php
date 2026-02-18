@@ -11,7 +11,6 @@ $specialDrinks = $specialDrinks ?? [];
     <section class="home-page__specials">
         <div class="home-page__heading">
             <h2>Drink speciali in evidenza</h2>
-            <p>In home vengono mostrati solo drink speciali, massimo 3.</p>
         </div>
 
         <?php if (empty($specialDrinks)): ?>
