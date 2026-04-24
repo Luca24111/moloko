@@ -22,7 +22,7 @@ abstract class AbstractPageController
         )));
 
         $payload = [
-            'title' => $options['title'] ?? 'moloKo Bar',
+            'title' => $options['title'] ?? 'moloch Bar',
             'description' => $options['description'] ?? 'Cocktail menu stagionale e atmosfera contemporanea.',
             'styles' => $styles,
             'scripts' => $options['scripts'] ?? [],

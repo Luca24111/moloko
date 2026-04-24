@@ -23,7 +23,7 @@ final class FoodController extends AbstractPageController
         $groupedFoods = $this->menuProvider->getGroupedFoods();
 
         return $this->renderPage('pages/food.php', [
-            'title' => 'Menu Piatti | moloKo',
+            'title' => 'Menu Piatti | moloch',
             'description' => 'Scopri tutti i piatti del locale, inclusi i fuori menu speciali.',
             'currentRoute' => 'food',
             'styles' => [

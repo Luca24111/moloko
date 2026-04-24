@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Food;
+use App\Service\ManagedMediaStorage;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -10,10 +11,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
 #[AdminRoute(path: '/food', name: 'food')]
 final class FoodCrudController extends AbstractCrudController
@@ -43,7 +44,20 @@ final class FoodCrudController extends AbstractCrudController
             ->setCurrency('EUR')
             ->setStoredAsCents(false)
             ->setNumDecimals(2);
-        yield UrlField::new('imageUrl', 'Foto (URL)')->hideOnIndex();
+        yield ImageField::new('imageUrl', 'Foto')
+            ->setBasePath((string) ManagedMediaStorage::basePathFor(Food::class))
+            ->onlyOnIndex();
+        yield ImageField::new('imageUrl', 'Foto')
+            ->setBasePath((string) ManagedMediaStorage::basePathFor(Food::class))
+            ->setUploadDir((string) ManagedMediaStorage::uploadDirFor(Food::class))
+            ->setUploadedFileNamePattern(ManagedMediaStorage::UPLOAD_FILENAME_PATTERN)
+            ->setRequired(false)
+            ->setHelp('Carica un file dal dispositivo. Il file verra gestito e pulito automaticamente dal sistema.')
+            ->hideOnIndex();
+        yield TextField::new('imageUrl', 'File salvato')
+            ->setDisabled()
+            ->setHelp('Percorso relativo salvato nel database.')
+            ->hideOnIndex();
         yield BooleanField::new('isSpecial', 'Speciale');
         yield BooleanField::new('isEnabled', 'Abilitato');
         yield DateTimeField::new('createdAt', 'Creata il')->hideOnForm();

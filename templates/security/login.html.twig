@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | moloKo</title>
+    <title>Admin Login | moloch</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -14,8 +14,13 @@
 <div class="admin-login-shell">
     <div class="admin-login-card">
         <a href="{{ path('home') }}" class="admin-login-brand">
-            <span class="admin-login-brand__dot"></span>
-            <span>molo<span class="admin-login-brand__k">K</span>o</span>
+            <img
+                class="admin-login-brand__logo"
+                src="{{ asset('images/home/logo/logo_moloch.png') }}"
+                alt=""
+                aria-hidden="true"
+            >
+            <span>molo<span class="admin-login-brand__k">ch</span></span>
         </a>
 
         <div class="admin-login-copy">

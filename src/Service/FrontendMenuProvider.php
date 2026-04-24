@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Drink;
 use App\Entity\DrinkCategory;
+use App\Entity\Event;
 use App\Entity\Food;
 use App\Entity\FoodCategory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,8 +12,10 @@ use Doctrine\ORM\QueryBuilder;
 
 final class FrontendMenuProvider
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ManagedMediaStorage $mediaStorage
+    ) {
     }
 
     public function getCategories(): array
@@ -73,6 +76,42 @@ final class FrontendMenuProvider
     public function countCategories(): int
     {
         return $this->entityManager->getRepository(DrinkCategory::class)->count(['isActive' => true]);
+    }
+
+    public function getPublishedEvents(int $limit = 0): array
+    {
+        $queryBuilder = $this->entityManager
+            ->getRepository(Event::class)
+            ->createQueryBuilder('event')
+            ->andWhere('event.isPublished = :isPublished')
+            ->andWhere('event.startsAt >= :today')
+            ->setParameter('isPublished', true)
+            ->setParameter('today', new \DateTimeImmutable('today'))
+            ->orderBy('event.startsAt', 'ASC')
+            ->addOrderBy('event.id', 'DESC');
+
+        if ($limit > 0) {
+            $queryBuilder->setMaxResults($limit);
+        }
+
+        $events = $queryBuilder->getQuery()->getResult();
+
+        return array_map(fn (Event $event): array => $this->mapEvent($event), $events);
+    }
+
+    public function countPublishedEvents(): int
+    {
+        return $this->entityManager->getRepository(Event::class)->count(['isPublished' => true]);
+    }
+
+    public function countFoods(): int
+    {
+        return $this->entityManager->getRepository(Food::class)->count(['isEnabled' => true]);
+    }
+
+    public function countFoodCategories(): int
+    {
+        return $this->entityManager->getRepository(FoodCategory::class)->count(['isActive' => true]);
     }
 
     public function getFoods(): array
@@ -151,7 +190,11 @@ final class FrontendMenuProvider
             'price' => number_format((float) ($drink->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryName),
             'category_slug' => $category !== null ? 'cat-'.($category->getId() ?? 0) : 'uncategorized',
-            'image' => $drink->getImageUrl() ?: 'https://images.unsplash.com/photo-1514361892635-6f5b4d1cd4be?auto=format&fit=crop&w=900&q=80',
+            'image' => $this->mediaStorage->resolvePublicUrl(
+                Drink::class,
+                $drink->getImageUrl(),
+                'https://images.unsplash.com/photo-1514361892635-6f5b4d1cd4be?auto=format&fit=crop&w=900&q=80'
+            ),
             'is_special' => $drink->isSpecial(),
             'is_enabled' => $drink->isEnabled(),
         ];
@@ -168,7 +211,11 @@ final class FrontendMenuProvider
             'price' => number_format((float) ($food->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryLabel),
             'category_slug' => $category !== null ? 'food-cat-'.($category->getId() ?? 0) : 'food-uncategorized',
-            'image' => $food->getImageUrl() ?: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80',
+            'image' => $this->mediaStorage->resolvePublicUrl(
+                Food::class,
+                $food->getImageUrl(),
+                'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80'
+            ),
             'is_special' => $food->isSpecial(),
             'is_enabled' => $food->isEnabled(),
         ];
@@ -183,6 +230,47 @@ final class FrontendMenuProvider
             'label' => $category->getName() ?? 'Categoria',
             'description' => $category->getDescription() ?? 'Categoria cibo configurata dal pannello admin.',
         ];
+    }
+
+    private function mapEvent(Event $event): array
+    {
+        $startsAt = $event->getStartsAt() ?? new \DateTimeImmutable();
+        $endsAt = $event->getEndsAt();
+        $ticketPrice = $event->getTicketPrice();
+
+        return [
+            'title' => $event->getTitle() ?? 'Evento',
+            'description' => $event->getDescription() ?? 'Dettagli evento in aggiornamento.',
+            'location' => $event->getLocation() ?? 'Location da definire',
+            'image' => $this->mediaStorage->resolvePublicUrl(
+                Event::class,
+                $event->getCoverImageUrl(),
+                'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80'
+            ),
+            'starts_at_label' => $this->formatShortEventDate($startsAt),
+            'time_label' => '',
+            'date_range_label' => $this->formatEventDateRange($startsAt, $endsAt),
+            'ticket_label' => $ticketPrice !== null ? '€ '.number_format((float) $ticketPrice, 2, '.', '') : 'Ingresso libero',
+            'is_free_entry' => $ticketPrice === null,
+        ];
+    }
+
+    private function formatEventDateRange(\DateTimeImmutable $startsAt, ?\DateTimeImmutable $endsAt): string
+    {
+        if ($endsAt === null) {
+            return $this->formatShortEventDate($startsAt);
+        }
+
+        if ($startsAt->format('Y-m-d') === $endsAt->format('Y-m-d')) {
+            return $this->formatShortEventDate($startsAt);
+        }
+
+        return $this->formatShortEventDate($startsAt).' - '.$this->formatShortEventDate($endsAt);
+    }
+
+    private function formatShortEventDate(\DateTimeImmutable $date): string
+    {
+        return $date->format('d/m');
     }
 
     private function createEnabledDrinkQueryBuilder(): QueryBuilder

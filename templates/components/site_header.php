@@ -3,9 +3,14 @@ $navItems = $navItems ?? [];
 $currentRoute = $currentRoute ?? '';
 ?>
 <header class="site-header">
-    <a href="/" class="brand-mark" aria-label="moloKo home">
-        <span class="brand-mark__dot"></span>
-        <span class="brand-mark__text">molo<span class="brand-mark__k">K</span>o</span>
+    <a href="/" class="brand-mark" aria-label="moloch home">
+        <img
+            class="brand-mark__logo"
+            src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
+            alt=""
+            aria-hidden="true"
+        >
+        <span class="brand-mark__text">molo<span class="brand-mark__k">ch</span></span>
     </a>
 
     <nav class="main-nav" aria-label="Navigazione principale">

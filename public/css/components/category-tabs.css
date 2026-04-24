@@ -22,9 +22,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    border: 1px solid var(--line);
-    background: #fff;
-    color: var(--text-muted);
+    border: 1px solid rgba(210, 101, 16, 0.18);
+    background: linear-gradient(140deg, #ff972e 0%, #f27a1a 58%, #d9660e 100%);
+    color: #fff;
     font-weight: 600;
     font-size: 0.78rem;
     padding: 0.28rem 0.62rem;
@@ -39,9 +39,9 @@
 }
 
 .category-tabs__chip.is-active {
-    background: var(--accent-soft);
-    border-color: #b9e9ca;
-    color: var(--accent-strong);
+    background: linear-gradient(140deg, #ffab52 0%, #f58c34 58%, #df7320 100%);
+    border-color: rgba(210, 101, 16, 0.26);
+    color: #fff;
 }
 
 .category-tabs--stacked .category-tabs__chip {
@@ -49,6 +49,6 @@
 }
 
 .category-tabs__chip:focus-visible {
-    outline: 2px solid #8fd4a8;
+    outline: 2px solid rgba(242, 122, 26, 0.36);
     outline-offset: 2px;
 }

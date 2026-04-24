@@ -5,8 +5,13 @@ $year = $year ?? (int) date('Y');
 <footer class="site-footer">
     <div class="site-footer__brand">
         <a href="/" class="brand-mark brand-mark--footer">
-            <span class="brand-mark__dot"></span>
-            <span class="brand-mark__text">molo<span class="brand-mark__k">K</span>o</span>
+            <img
+                class="brand-mark__logo"
+                src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
+                alt=""
+                aria-hidden="true"
+            >
+            <span class="brand-mark__text">molo<span class="brand-mark__k">ch</span></span>
         </a>
         <p>
             Cocktail bar contemporaneo con drink stagionali,
@@ -23,5 +28,5 @@ $year = $year ?? (int) date('Y');
         </ul>
     </div>
 
-    <p class="site-footer__legal">&copy; <?= $e((string) $year); ?> moloKo. All rights reserved.</p>
+    <p class="site-footer__legal">&copy; <?= $e((string) $year); ?> moloch. All rights reserved.</p>
 </footer>

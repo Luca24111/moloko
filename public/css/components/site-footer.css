@@ -1,5 +1,5 @@
 .site-footer {
-    background: #f6faf8;
+    background: linear-gradient(180deg, rgba(255, 248, 242, 0.98) 0%, rgba(255, 241, 230, 0.98) 100%);
     border-top: 1px solid var(--line);
     padding: 1rem 0.85rem 1.1rem;
     display: grid;
@@ -43,7 +43,7 @@
 .site-footer__legal {
     border-top: 1px solid var(--line);
     padding-top: 0.85rem;
-    color: #708087;
+    color: rgba(76, 47, 32, 0.66);
     font-size: 0.85rem;
 }
 

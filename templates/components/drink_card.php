@@ -14,7 +14,7 @@ $className = $compact ? 'drink-card drink-card--compact' : 'drink-card';
     <div class="drink-card__body">
         <div class="drink-card__head">
             <h3><?= $e($drink['name'] ?? 'Drink'); ?></h3>
-            <span>EUR <?= $e($drink['price'] ?? '0.00'); ?></span>
+            <span>€ <?= $e($drink['price'] ?? '0.00'); ?></span>
         </div>
 
         <p class="drink-card__description"><?= $e($drink['description'] ?? 'Descrizione drink.'); ?></p>

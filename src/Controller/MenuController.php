@@ -24,7 +24,7 @@ final class MenuController extends AbstractPageController
         $specialDrinks = $this->menuProvider->getSpecialDrinks();
 
         return $this->renderPage('pages/menu.php', [
-            'title' => 'Menu Drink | moloKo',
+            'title' => 'Menu Drink | moloch',
             'description' => 'Carta cocktail completa con categorie create dal pannello admin.',
             'currentRoute' => 'menu',
             'styles' => [

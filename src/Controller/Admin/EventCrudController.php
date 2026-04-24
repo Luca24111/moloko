@@ -3,15 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Event;
+use App\Service\ManagedMediaStorage;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
 final class EventCrudController extends AbstractCrudController
 {
@@ -42,7 +43,20 @@ final class EventCrudController extends AbstractCrudController
             ->setStoredAsCents(false)
             ->setNumDecimals(2)
             ->setRequired(false);
-        yield UrlField::new('coverImageUrl', 'Cover URL')->hideOnIndex();
+        yield ImageField::new('coverImageUrl', 'Cover')
+            ->setBasePath((string) ManagedMediaStorage::basePathFor(Event::class))
+            ->onlyOnIndex();
+        yield ImageField::new('coverImageUrl', 'Cover')
+            ->setBasePath((string) ManagedMediaStorage::basePathFor(Event::class))
+            ->setUploadDir((string) ManagedMediaStorage::uploadDirFor(Event::class))
+            ->setUploadedFileNamePattern(ManagedMediaStorage::UPLOAD_FILENAME_PATTERN)
+            ->setRequired(false)
+            ->setHelp('Carica un file dal dispositivo. Il file verra gestito e pulito automaticamente dal sistema.')
+            ->hideOnIndex();
+        yield TextField::new('coverImageUrl', 'File salvato')
+            ->setDisabled()
+            ->setHelp('Percorso relativo salvato nel database.')
+            ->hideOnIndex();
         yield BooleanField::new('isPublished', 'Pubblicato');
         yield DateTimeField::new('createdAt', 'Creato il')->hideOnForm();
         yield DateTimeField::new('updatedAt', 'Aggiornato il')->hideOnForm();

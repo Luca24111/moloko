@@ -141,12 +141,12 @@ class Drink
 
     public function getImageUrl(): ?string
     {
-        return $this->imageUrl;
+        return self::normalizeStoredImagePath($this->imageUrl);
     }
 
     public function setImageUrl(?string $imageUrl): static
     {
-        $this->imageUrl = $imageUrl;
+        $this->imageUrl = self::normalizeStoredImagePath($imageUrl);
         $this->touch();
 
         return $this;
@@ -178,5 +178,24 @@ class Drink
     private function touch(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    private static function normalizeStoredImagePath(?string $imageUrl): ?string
+    {
+        $path = trim((string) $imageUrl);
+        if ($path === '') {
+            return null;
+        }
+
+        if ((bool) preg_match('#^(?:https?:)?//#i', $path) || str_starts_with($path, 'data:')) {
+            return $path;
+        }
+
+        $normalizedPath = ltrim(
+            preg_replace('#^(?:/?public)?/?uploads/media/drinks/#', '', str_replace('\\', '/', $path)) ?? $path,
+            '/'
+        );
+
+        return basename($normalizedPath);
     }
 }

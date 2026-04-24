@@ -36,7 +36,7 @@ final class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('moloKo Admin')
+            ->setTitle('moloch Admin')
             ->setFaviconPath('favicon.ico')
             ->renderContentMaximized();
     }

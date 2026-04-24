@@ -140,12 +140,12 @@ class Event
 
     public function getCoverImageUrl(): ?string
     {
-        return $this->coverImageUrl;
+        return self::normalizeStoredImagePath($this->coverImageUrl);
     }
 
     public function setCoverImageUrl(?string $coverImageUrl): static
     {
-        $this->coverImageUrl = $coverImageUrl;
+        $this->coverImageUrl = self::normalizeStoredImagePath($coverImageUrl);
         $this->touch();
 
         return $this;
@@ -177,5 +177,24 @@ class Event
     private function touch(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    private static function normalizeStoredImagePath(?string $imageUrl): ?string
+    {
+        $path = trim((string) $imageUrl);
+        if ($path === '') {
+            return null;
+        }
+
+        if ((bool) preg_match('#^(?:https?:)?//#i', $path) || str_starts_with($path, 'data:')) {
+            return $path;
+        }
+
+        $normalizedPath = ltrim(
+            preg_replace('#^(?:/?public)?/?uploads/media/events/#', '', str_replace('\\', '/', $path)) ?? $path,
+            '/'
+        );
+
+        return basename($normalizedPath);
     }
 }

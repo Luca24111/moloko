@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Drink;
+use App\Service\ManagedMediaStorage;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -15,10 +16,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
 abstract class AbstractDrinkCrudController extends AbstractCrudController
 {
@@ -51,7 +52,20 @@ abstract class AbstractDrinkCrudController extends AbstractCrudController
             ->setCurrency('EUR')
             ->setNumDecimals(2)
             ->setStoredAsCents(false);
-        yield UrlField::new('imageUrl', 'Immagine URL')->hideOnIndex();
+        yield ImageField::new('imageUrl', 'Immagine')
+            ->setBasePath((string) ManagedMediaStorage::basePathFor(Drink::class))
+            ->onlyOnIndex();
+        yield ImageField::new('imageUrl', 'Immagine')
+            ->setBasePath((string) ManagedMediaStorage::basePathFor(Drink::class))
+            ->setUploadDir((string) ManagedMediaStorage::uploadDirFor(Drink::class))
+            ->setUploadedFileNamePattern(ManagedMediaStorage::UPLOAD_FILENAME_PATTERN)
+            ->setRequired(false)
+            ->setHelp('Carica un file dal dispositivo. Il file verra gestito e pulito automaticamente dal sistema.')
+            ->hideOnIndex();
+        yield TextField::new('imageUrl', 'File salvato')
+            ->setDisabled()
+            ->setHelp('Percorso relativo salvato nel database.')
+            ->hideOnIndex();
         yield DateTimeField::new('createdAt', 'Creato il')->hideOnForm();
         yield DateTimeField::new('updatedAt', 'Aggiornato il')->hideOnForm();
     }

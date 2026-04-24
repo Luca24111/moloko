@@ -1,27 +1,38 @@
 <?php
-$kicker = $kicker ?? 'moloKo';
+$kicker = $kicker ?? 'moloch';
 $title = $title ?? '';
 $text = $text ?? '';
 $primaryCta = $primaryCta ?? ['label' => 'Scopri', 'url' => '/menu'];
 $secondaryCta = $secondaryCta ?? null;
 $slides = $slides ?? [];
 $badge = $badge ?? null;
+$visualOnly = (bool) ($visualOnly ?? false);
 ?>
-<section class="hero">
-    <div class="hero__copy-top">
-        <h1 class="hero__title"><?= $e($title); ?></h1>
-    </div>
+<section class="hero<?= $visualOnly ? ' hero--visual-only' : ''; ?>">
+    <?php if ($title !== ''): ?>
+        <div class="hero__copy-top">
+            <h1 class="hero__title"><?= $e($title); ?></h1>
+        </div>
+    <?php endif; ?>
 
     <div class="hero__visual" data-special-carousel>
         <div class="hero__slides">
             <?php foreach ($slides as $index => $slide): ?>
                 <?php $isActive = $index === 0; ?>
                 <figure class="hero__slide<?= $isActive ? ' is-active' : ''; ?>"<?= $isActive ? '' : ' hidden'; ?>>
-                    <img src="<?= $e($slide['url'] ?? ''); ?>" alt="<?= $e($slide['alt'] ?? 'Drink speciale'); ?>">
-                    <figcaption class="hero__caption">
-                        <strong><?= $e($slide['title'] ?? 'Drink speciale'); ?></strong>
-                        <span>EUR <?= $e($slide['price'] ?? '0.00'); ?></span>
-                    </figcaption>
+                    <img src="<?= $e($slide['url'] ?? ''); ?>" alt="<?= $e($slide['alt'] ?? 'Slide principale'); ?>">
+                    <?php $slideTitle = trim((string) ($slide['title'] ?? '')); ?>
+                    <?php $slideMeta = trim((string) ($slide['meta'] ?? ('€ '.($slide['price'] ?? '0.00')))); ?>
+                    <?php if ($slideTitle !== '' || $slideMeta !== ''): ?>
+                        <figcaption class="hero__caption">
+                            <?php if ($slideTitle !== ''): ?>
+                                <strong class="hero__event-title"><?= $e($slideTitle); ?></strong>
+                            <?php endif; ?>
+                            <?php if ($slideMeta !== ''): ?>
+                                <span class="hero__event-date"><?= $e($slideMeta); ?></span>
+                            <?php endif; ?>
+                        </figcaption>
+                    <?php endif; ?>
                 </figure>
             <?php endforeach; ?>
         </div>
@@ -48,18 +59,22 @@ $badge = $badge ?? null;
         <?php endif; ?>
     </div>
 
-    <div class="hero__copy-bottom">
-        <p class="hero__text"><?= $e($text); ?></p>
+    <?php if ($text !== '' || is_array($primaryCta) || is_array($secondaryCta)): ?>
+        <div class="hero__copy-bottom">
+            <?php if ($text !== ''): ?>
+                <p class="hero__text"><?= $e($text); ?></p>
+            <?php endif; ?>
 
-        <div class="hero__actions">
-            <a class="btn btn--solid" href="<?= $e($primaryCta['url'] ?? '/menu'); ?>">
-                <?= $e($primaryCta['label'] ?? 'Scopri'); ?>
-            </a>
-            <?php if (is_array($secondaryCta)): ?>
-                <a class="btn btn--ghost" href="<?= $e($secondaryCta['url'] ?? '/menu'); ?>">
-                    <?= $e($secondaryCta['label'] ?? 'Menu'); ?>
-                </a>
+            <?php if (is_array($primaryCta) || is_array($secondaryCta)): ?>
+                <div class="hero__actions">
+                    
+                    <?php if (is_array($secondaryCta)): ?>
+                        <a class="btn btn--ghost" href="<?= $e($secondaryCta['url'] ?? '/menu'); ?>">
+                            <?= $e($secondaryCta['label'] ?? 'Menu'); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
         </div>
-    </div>
+    <?php endif; ?>
 </section>

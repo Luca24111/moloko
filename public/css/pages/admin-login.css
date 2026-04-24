@@ -11,9 +11,9 @@
 
 .admin-login-card {
     border-radius: 28px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #dbe7e0;
-    box-shadow: 0 28px 60px rgba(15, 27, 22, 0.1);
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 243, 232, 0.98) 100%);
+    border: 1px solid rgba(214, 131, 63, 0.18);
+    box-shadow: 0 28px 60px rgba(123, 68, 26, 0.14);
     padding: clamp(1.1rem, 3vw, 2.2rem);
     display: grid;
     gap: 1rem;
@@ -25,18 +25,18 @@
     gap: 0.55rem;
     font-family: var(--font-display);
     font-weight: 700;
+    color: var(--text-main);
 }
 
 .admin-login-brand__k {
-    color: #178344;
+    color: var(--accent);
 }
 
-.admin-login-brand__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: linear-gradient(150deg, #22c55e, #178344);
-    box-shadow: 0 0 0 6px rgba(35, 164, 85, 0.16);
+.admin-login-brand__logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 
 .admin-login-copy {
@@ -45,7 +45,7 @@
 }
 
 .admin-login-copy__kicker {
-    color: #178344;
+    color: var(--accent-strong);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 800;
@@ -58,7 +58,7 @@
 }
 
 .admin-login-copy p {
-    color: #546067;
+    color: var(--text-muted);
 }
 
 .admin-login-error {
@@ -82,18 +82,22 @@
 
 .admin-login-form input {
     width: 100%;
-    border: 1px solid #ccddd3;
-    background: #fcfefd;
-    color: #182127;
+    border: 1px solid rgba(214, 131, 63, 0.22);
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--text-main);
     border-radius: 12px;
     padding: 0.72rem 0.8rem;
     font: inherit;
 }
 
+.admin-login-form input::placeholder {
+    color: rgba(76, 47, 32, 0.45);
+}
+
 .admin-login-form input:focus {
     outline: none;
-    border-color: #8fd4a8;
-    box-shadow: 0 0 0 3px rgba(35, 164, 85, 0.16);
+    border-color: rgba(242, 122, 26, 0.38);
+    box-shadow: 0 0 0 3px rgba(242, 122, 26, 0.12);
 }
 
 .admin-login-form button {
@@ -104,7 +108,7 @@
     font-weight: 700;
     font-size: 0.95rem;
     color: #fff;
-    background: linear-gradient(140deg, #23a455, #178344);
+    background: linear-gradient(140deg, #ff972e 0%, #f27a1a 58%, #d9660e 100%);
     cursor: pointer;
     justify-self: start;
 }
@@ -114,10 +118,10 @@
 }
 
 .admin-login-back a {
-    color: #2b3b42;
+    color: var(--text-muted);
     font-weight: 700;
 }
 
 .admin-login-back a:hover {
-    color: #178344;
+    color: var(--accent-strong);
 }

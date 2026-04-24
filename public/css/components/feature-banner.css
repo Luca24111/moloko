@@ -1,7 +1,7 @@
 .feature-banner {
     margin-top: 1rem;
-    background: #162127;
-    color: #fff;
+    background: linear-gradient(145deg, rgba(255, 244, 235, 0.98) 0%, rgba(255, 228, 205, 0.98) 100%);
+    color: var(--text-main);
     border-radius: var(--radius-md);
     padding: 0.85rem;
     display: grid;
@@ -10,7 +10,7 @@
 }
 
 .feature-banner__item {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.72);
     border-radius: 14px;
     padding: 0.72rem;
 }
@@ -23,7 +23,7 @@
 
 .feature-banner__label {
     margin-top: 0.2rem;
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--text-muted);
     font-size: 0.88rem;
 }
 

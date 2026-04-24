@@ -1,24 +1,25 @@
 :root {
     --font-display: "Sora", "Trebuchet MS", sans-serif;
     --font-body: "Manrope", "Segoe UI", sans-serif;
+    --font-event: "Bebas Neue", "Sora", sans-serif;
 
-    --bg-soft: #edf4f2;
-    --surface: #ffffff;
-    --surface-strong: #f7fbf9;
-    --text-main: #182127;
-    --text-muted: #556067;
+    --bg-soft: #fff7f1;
+    --surface: rgba(255, 255, 255, 0.82);
+    --surface-strong: rgba(255, 244, 235, 0.94);
+    --text-main: #342117;
+    --text-muted: rgba(76, 47, 32, 0.78);
 
-    --accent: #23a455;
-    --accent-strong: #178344;
-    --accent-soft: #dcf5e4;
-    --line: #dfe9e3;
+    --accent: #f27a1a;
+    --accent-strong: #c95e07;
+    --accent-soft: rgba(242, 122, 26, 0.14);
+    --line: rgba(214, 131, 63, 0.22);
 
     --radius-xl: 30px;
     --radius-lg: 22px;
     --radius-md: 16px;
     --radius-sm: 12px;
 
-    --shadow-soft: 0 24px 56px rgba(15, 26, 22, 0.08);
+    --shadow-soft: 0 24px 56px rgba(123, 68, 26, 0.12);
 }
 
 * {
@@ -35,9 +36,9 @@ body {
     font-family: var(--font-body);
     color: var(--text-main);
     background:
-        radial-gradient(circle at 14% 12%, rgba(35, 164, 85, 0.18), transparent 32%),
-        radial-gradient(circle at 88% 10%, rgba(236, 177, 80, 0.2), transparent 28%),
-        linear-gradient(180deg, #eff6f4 0%, #e7efec 100%);
+        radial-gradient(circle at 14% 12%, rgba(255, 196, 150, 0.26), transparent 32%),
+        radial-gradient(circle at 88% 10%, rgba(244, 154, 81, 0.18), transparent 28%),
+        linear-gradient(180deg, #fffdfb 0%, #fff7f0 54%, #fff2e6 100%);
     min-height: 100vh;
     padding: 0;
 }
@@ -65,7 +66,7 @@ img {
     height: 220px;
     right: -90px;
     top: 14%;
-    background: rgba(35, 164, 85, 0.14);
+    background: rgba(255, 194, 138, 0.26);
 }
 
 .ambient-shape--two {
@@ -73,7 +74,7 @@ img {
     height: 210px;
     left: -100px;
     bottom: 6%;
-    background: rgba(236, 177, 80, 0.18);
+    background: rgba(244, 154, 81, 0.18);
 }
 
 .site-shell {
@@ -81,7 +82,7 @@ img {
     z-index: 1;
     width: 100%;
     margin: 0;
-    background: rgba(255, 255, 255, 0.94);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 247, 239, 0.94) 100%);
     border: 0;
     border-radius: 0;
     overflow: hidden;
@@ -124,24 +125,26 @@ p {
 }
 
 .btn--solid {
-    background: var(--accent);
+    background: linear-gradient(140deg, #ff972e 0%, #f27a1a 58%, #d9660e 100%);
     color: #fff;
-    box-shadow: 0 10px 25px rgba(35, 164, 85, 0.28);
+    box-shadow: 0 12px 28px rgba(185, 93, 20, 0.24);
 }
 
 .btn--solid:hover {
-    background: var(--accent-strong);
+    background: linear-gradient(140deg, #ffa647 0%, #f6882f 58%, #de7120 100%);
 }
 
 .btn--ghost {
-    background: var(--surface);
-    color: var(--text-main);
-    border: 1px solid var(--line);
+    background: linear-gradient(140deg, #ff972e 0%, #f27a1a 58%, #d9660e 100%);
+    color: #fff;
+    border: 1px solid rgba(210, 101, 16, 0.22);
+    box-shadow: 0 12px 28px rgba(185, 93, 20, 0.18);
 }
 
 .btn--ghost:hover {
-    border-color: var(--accent);
-    color: var(--accent-strong);
+    background: linear-gradient(140deg, #ffa647 0%, #f6882f 58%, #de7120 100%);
+    border-color: rgba(210, 101, 16, 0.28);
+    color: #fff;
 }
 
 @media (min-width: 901px) {
@@ -152,7 +155,7 @@ p {
     .site-shell {
         width: min(1200px, 100%);
         margin: 0 auto;
-        border: 1px solid rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(214, 131, 63, 0.16);
         border-radius: var(--radius-xl);
         box-shadow: var(--shadow-soft);
         backdrop-filter: blur(10px);

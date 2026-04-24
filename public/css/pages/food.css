@@ -4,7 +4,7 @@
 }
 
 .food-page__header {
-    background: linear-gradient(145deg, #f8fcf9 0%, #eef7f2 100%);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 236, 221, 0.96) 100%);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
     padding: 0.95rem;
@@ -38,7 +38,7 @@
 }
 
 .food-page__sidebar {
-    background: #fff;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 243, 233, 0.96) 100%);
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
     padding: 0.82rem;
@@ -60,7 +60,7 @@
 .food-page__section {
     border-radius: var(--radius-md);
     border: 1px solid var(--line);
-    background: #fbfdfc;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 246, 238, 0.96) 100%);
     padding: 0.82rem;
     display: grid;
     gap: 0.75rem;

@@ -5,7 +5,7 @@
 }
 
 .drink-card {
-    background: #fff;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 245, 236, 0.96) 100%);
     border-radius: var(--radius-md);
     border: 1px solid var(--line);
     padding: 0.72rem;
@@ -63,8 +63,8 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     border-radius: 999px;
-    background: #f2f7f4;
-    color: #4e5a61;
+    background: rgba(242, 122, 26, 0.12);
+    color: var(--accent-strong);
     padding: 0.28rem 0.55rem;
 }
 

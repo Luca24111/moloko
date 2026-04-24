@@ -1,5 +1,5 @@
 <?php
-$title = $title ?? 'moloKo Bar';
+$title = $title ?? 'moloch Bar';
 $description = $description ?? 'Cocktail menu e bar experience contemporanea.';
 $styles = $styles ?? [];
 $scripts = $scripts ?? [];
@@ -15,7 +15,7 @@ $currentRoute = $currentRoute ?? '';
     <meta name="description" content="<?= $e($description); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= $e($asset('css/base.css')); ?>">
     <?php foreach ($styles as $style): ?>
         <link rel="stylesheet" href="<?= $e($asset($style)); ?>">

@@ -4,7 +4,7 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 0.8rem;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 249, 243, 0.82);
     border-bottom: 1px solid var(--line);
     position: sticky;
     top: 0;
@@ -15,22 +15,24 @@
 .brand-mark {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.45rem;
     font-family: var(--font-display);
     font-weight: 700;
     letter-spacing: -0.02em;
+    color: var(--text-main);
+    margin: 0 auto;
 }
 
 .brand-mark__k {
-    color: var(--accent-strong);
+    color: var(--accent);
 }
 
-.brand-mark__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: linear-gradient(150deg, #22c55e, #178344);
-    box-shadow: 0 0 0 5px rgba(35, 164, 85, 0.16);
+.brand-mark__logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 
 .main-nav {
@@ -38,6 +40,7 @@
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.35rem;
     padding: 0.2rem;
     border-radius: 999px;
@@ -58,8 +61,8 @@
 
 .main-nav__link:hover,
 .main-nav__link.is-active {
-    color: var(--accent-strong);
-    background: var(--accent-soft);
+    color: #fff;
+    background: linear-gradient(140deg, #ff972e 0%, #f27a1a 58%, #d9660e 100%);
 }
 
 .header-action {
@@ -68,8 +71,8 @@
     border-radius: 999px;
     color: #fff;
     font-weight: 700;
-    background: linear-gradient(140deg, #23a455, #178344);
-    box-shadow: 0 10px 18px rgba(35, 164, 85, 0.22);
+    background: linear-gradient(140deg, #ff972e 0%, #f27a1a 58%, #d9660e 100%);
+    box-shadow: 0 10px 18px rgba(185, 93, 20, 0.24);
     white-space: nowrap;
     min-height: 40px;
 }
@@ -81,9 +84,14 @@
         padding: 1.1rem clamp(1rem, 2vw, 2rem);
     }
 
+    .brand-mark {
+        margin: 0;
+    }
+
     .main-nav {
         order: initial;
         width: auto;
         max-width: 60%;
+        justify-content: flex-start;
     }
 }
