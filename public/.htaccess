@@ -17,6 +17,13 @@ DirectoryIndex index.php
     Options -MultiViews
 </IfModule>
 
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -100,5 +107,3 @@ DirectoryIndex index.php
     ExpiresByType application/javascript "access plus 1 month"
 
 </IfModule>
-
-Redirect 301 /resi /return-request

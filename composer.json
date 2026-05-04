@@ -1,4 +1,6 @@
 {
+    "name": "moloch/menu",
+    "description": "Menu e pannello gestione per il disco bar Moloch.",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
@@ -47,6 +49,14 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
+        "prod:cache": [
+            "@php bin/console cache:clear --env=prod --no-debug",
+            "@php bin/console cache:warmup --env=prod --no-debug"
+        ],
+        "prod:check": [
+            "@php bin/console lint:container --env=prod --no-debug",
+            "@php bin/console doctrine:schema:validate --skip-sync --env=prod --no-debug"
+        ],
         "post-install-cmd": [
             "@auto-scripts"
         ],
