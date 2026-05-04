@@ -14,15 +14,17 @@
 .site-footer__brand p {
     color: var(--text-muted);
     line-height: 1.55;
-    max-width: 38ch;
+    max-width: 42ch;
     font-size: 0.94rem;
 }
 
+.site-footer__contact h3,
 .site-footer__links h3 {
     font-size: 0.96rem;
     margin-bottom: 0.55rem;
 }
 
+.site-footer__contact ul,
 .site-footer__links ul {
     margin: 0;
     padding: 0;
@@ -31,11 +33,30 @@
     gap: 0.4rem;
 }
 
+.site-footer__contact li {
+    display: grid;
+    grid-template-columns: 1.1rem 1fr;
+    gap: 0.55rem;
+    align-items: start;
+    color: var(--text-muted);
+    font-size: 0.94rem;
+    line-height: 1.45;
+}
+
+.site-footer__contact i {
+    color: var(--accent-strong);
+    font-size: 0.98rem;
+    line-height: 1.45;
+    text-align: center;
+}
+
+.site-footer__contact a,
 .site-footer__links a {
     color: var(--text-muted);
     font-weight: 600;
 }
 
+.site-footer__contact a:hover,
 .site-footer__links a:hover {
     color: var(--accent-strong);
 }
@@ -50,7 +71,7 @@
 @media (min-width: 901px) {
     .site-footer {
         padding: clamp(1.25rem, 2.2vw, 2rem);
-        grid-template-columns: 1.4fr 1fr;
+        grid-template-columns: 1.25fr 1.15fr 0.8fr;
         gap: 1rem 1.5rem;
     }
 

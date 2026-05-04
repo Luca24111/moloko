@@ -5,16 +5,16 @@ $groupedFoods = $groupedFoods ?? [];
 ?>
 <section class="food-page" data-menu-filter>
     <header class="food-page__header">
-        <p class="food-page__kicker">Menu Cucina</p>
-        <h1>I nostri piatti</h1>
+        <p class="food-page__kicker">Cucina</p>
+        <h1>Sapori da condividere</h1>
         <p>
-            Scopri i piatti del locale e filtra rapidamente per categoria.
+            Piatti, sfizi e proposte leggere per accompagnare aperitivo, cena e dopocena.
         </p>
     </header>
 
     <div class="food-page__layout">
         <aside class="food-page__sidebar">
-            <h2>Categorie</h2>
+            <h2>Scegli cosa assaggiare</h2>
             <?php $include('components/category_tabs.php', [
                 'categories' => $categories,
                 'activeCategory' => $activeCategory,
@@ -28,7 +28,7 @@ $groupedFoods = $groupedFoods ?? [];
         <div class="food-page__sections">
             <?php if (empty($groupedFoods)): ?>
                 <section class="food-page__section">
-                    <p class="food-page__empty">Nessuna categoria cibo disponibile. Aggiungila dal backend.</p>
+                    <p class="food-page__empty">Le proposte cucina saranno disponibili a breve.</p>
                 </section>
             <?php endif; ?>
 
@@ -39,12 +39,12 @@ $groupedFoods = $groupedFoods ?? [];
                     data-category-section="<?= $e($section['category']['slug'] ?? ''); ?>"
                 >
                     <div class="food-page__section-head">
-                        <h3><?= $e($section['category']['label'] ?? 'Categoria'); ?></h3>
-                        <p><?= $e($section['category']['description'] ?? 'Descrizione categoria'); ?></p>
+                        <h3><?= $e($section['category']['label'] ?? 'Proposte cucina'); ?></h3>
+                        <p><?= $e($section['category']['description'] ?? 'Sapori semplici e curati da portare al tavolo con un drink.'); ?></p>
                     </div>
 
                     <?php if (empty($section['foods'])): ?>
-                        <p class="food-page__empty">Nessun piatto associato a questa categoria.</p>
+                        <p class="food-page__empty">Questa proposta tornera presto in carta.</p>
                     <?php else: ?>
                         <?php $include('components/drink_grid.php', ['drinks' => $section['foods'] ?? []]); ?>
                     <?php endif; ?>

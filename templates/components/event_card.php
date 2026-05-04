@@ -18,11 +18,11 @@ $event = $event ?? [];
             <span class="event-card__price"><?= $e($event['ticket_label'] ?? 'Ingresso libero'); ?></span>
         </div>
 
-        <p class="event-card__description"><?= $e($event['description'] ?? 'Dettagli evento in aggiornamento.'); ?></p>
+        <p class="event-card__description"><?= $e($event['description'] ?? 'Musica, drink e atmosfera in riva al Po.'); ?></p>
 
         <div class="event-card__meta">
-            <span class="event-card__tag"><?= $e($event['location'] ?? 'Location da definire'); ?></span>
-            <span class="event-card__time"><?= $e($event['date_range_label'] ?? 'Orario da definire'); ?></span>
+            <span class="event-card__tag"><?= $e($event['location'] ?? 'Moloch, Borgoforte'); ?></span>
+            <span class="event-card__time"><?= $e($event['date_range_label'] ?? 'Orario in arrivo'); ?></span>
         </div>
     </div>
 </article>

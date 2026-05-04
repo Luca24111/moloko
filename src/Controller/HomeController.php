@@ -41,8 +41,8 @@ final class HomeController extends AbstractPageController
         }
 
         return $this->renderPage('pages/home.php', [
-            'title' => 'moloch | Cocktail Bar',
-            'description' => 'Menu cocktail con signature drink, spritz e mocktail premium.',
+            'title' => 'moloch | Disco Bar sul Po',
+            'description' => 'Disco bar a Borgoforte con cocktail, cucina ed eventi in riva al Po.',
             'currentRoute' => 'home',
             'styles' => [
                 'css/components/hero.css',
@@ -62,10 +62,10 @@ final class HomeController extends AbstractPageController
                     'visualOnly' => true,
                 ],
                 'stats' => [
-                    ['label' => 'Cocktail in carta', 'value' => (string) $this->menuProvider->countDrinks()],
-                    ['label' => 'Ingredienti freschi', 'value' => '100%'],
-                    ['label' => 'Categorie drink', 'value' => (string) $this->menuProvider->countCategories()],
-                    ['label' => 'Eventi pubblicati', 'value' => (string) $this->menuProvider->countPublishedEvents()],
+                    ['label' => 'Drink in carta', 'value' => (string) $this->menuProvider->countDrinks()],
+                    ['label' => 'Sapore fresco', 'value' => '100%'],
+                    ['label' => 'Stili da provare', 'value' => (string) $this->menuProvider->countCategories()],
+                    ['label' => 'Serate in programma', 'value' => (string) $this->menuProvider->countPublishedEvents()],
                 ],
                 'quickLinks' => [
                     [
@@ -78,7 +78,7 @@ final class HomeController extends AbstractPageController
                         'url' => '/menu',
                     ],
                     [
-                        'eyebrow' => 'Menu',
+                        'eyebrow' => 'Cucina',
                         'image' => $this->homeCardImageResolver->resolve(
                             'menu',
                             $featuredFood['image'] ?? 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=80'

@@ -31,9 +31,11 @@ final class DrinkCategoryCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
-        yield TextField::new('name', 'Nome categoria');
-        yield TextareaField::new('description', 'Descrizione')->hideOnIndex();
-        yield IntegerField::new('displayOrder', 'Ordine');
+        yield TextField::new('name', 'Nome categoria')->setRequired(false);
+        yield TextareaField::new('description', 'Descrizione')
+            ->setRequired(false)
+            ->hideOnIndex();
+        yield IntegerField::new('displayOrder', 'Ordine')->setRequired(false);
         yield BooleanField::new('isActive', 'Attiva');
         yield DateTimeField::new('createdAt', 'Creata il')->hideOnForm();
         yield DateTimeField::new('updatedAt', 'Aggiornata il')->hideOnForm();

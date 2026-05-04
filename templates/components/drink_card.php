@@ -14,13 +14,9 @@ $className = $compact ? 'drink-card drink-card--compact' : 'drink-card';
     <div class="drink-card__body">
         <div class="drink-card__head">
             <h3><?= $e($drink['name'] ?? 'Drink'); ?></h3>
-            <span>€ <?= $e($drink['price'] ?? '0.00'); ?></span>
         </div>
 
-        <p class="drink-card__description"><?= $e($drink['description'] ?? 'Descrizione drink.'); ?></p>
-
-        <div class="drink-card__meta">
-            <span class="drink-card__tag"><?= $e($drink['category'] ?? 'signature'); ?></span>
-        </div>
+        <p class="drink-card__description"><?= $e($drink['description'] ?? 'Una proposta firmata Moloch.'); ?></p>
+        <p class="drink-card__price">€ <?= $e($drink['price'] ?? '0.00'); ?></p>
     </div>
 </article>

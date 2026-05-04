@@ -33,11 +33,13 @@ final class EventCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
-        yield TextField::new('title', 'Titolo');
-        yield TextareaField::new('description', 'Descrizione')->hideOnIndex();
-        yield DateTimeField::new('startsAt', 'Inizio');
+        yield TextField::new('title', 'Titolo')->setRequired(false);
+        yield TextareaField::new('description', 'Descrizione')
+            ->setRequired(false)
+            ->hideOnIndex();
+        yield DateTimeField::new('startsAt', 'Inizio')->setRequired(false);
         yield DateTimeField::new('endsAt', 'Fine')->setRequired(false);
-        yield TextField::new('location', 'Location');
+        yield TextField::new('location', 'Location')->setRequired(false);
         yield MoneyField::new('ticketPrice', 'Prezzo biglietto')
             ->setCurrency('EUR')
             ->setStoredAsCents(false)

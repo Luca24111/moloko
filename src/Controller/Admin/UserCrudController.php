@@ -39,13 +39,13 @@ final class UserCrudController extends AbstractCrudController
     {
         $password = TextField::new('plainPassword', 'Password')
             ->setFormType(PasswordType::class)
-            ->setRequired($pageName === Crud::PAGE_NEW)
+            ->setRequired(false)
             ->setHelp('Lascia vuoto in modifica se non vuoi cambiare password.')
             ->onlyOnForms();
 
         yield IdField::new('id')->hideOnForm();
         yield TextField::new('fullName', 'Nome completo')->setRequired(false);
-        yield EmailField::new('email', 'Email');
+        yield EmailField::new('email', 'Email')->setRequired(false);
         yield ChoiceField::new('roles', 'Ruoli')
             ->setChoices([
                 'Utente' => 'ROLE_USER',
@@ -55,7 +55,8 @@ final class UserCrudController extends AbstractCrudController
             ->renderAsBadges([
                 'ROLE_ADMIN' => 'danger',
                 'ROLE_USER' => 'success',
-            ]);
+            ])
+            ->setRequired(false);
         yield BooleanField::new('isActive', 'Attivo');
         yield $password;
         yield DateTimeField::new('createdAt', 'Creato il')->hideOnForm();

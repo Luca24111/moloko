@@ -15,14 +15,14 @@ class DrinkCategory
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 120)]
+    #[ORM\Column(length: 120, nullable: true)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(options: ['default' => 0])]
-    private int $displayOrder = 0;
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $displayOrder = 0;
 
     #[ORM\Column(options: ['default' => true])]
     private bool $isActive = true;
@@ -60,9 +60,9 @@ class DrinkCategory
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
-        $this->name = trim($name);
+        $this->name = $name !== null ? trim($name) : null;
         $this->touch();
 
         return $this;
@@ -81,12 +81,12 @@ class DrinkCategory
         return $this;
     }
 
-    public function getDisplayOrder(): int
+    public function getDisplayOrder(): ?int
     {
         return $this->displayOrder;
     }
 
-    public function setDisplayOrder(int $displayOrder): static
+    public function setDisplayOrder(?int $displayOrder): static
     {
         $this->displayOrder = $displayOrder;
         $this->touch();

@@ -7,9 +7,9 @@ $groupedDrinks = $groupedDrinks ?? [];
 <section class="menu-page" data-menu-filter>
     <header class="menu-page__header">
         <p class="menu-page__kicker">Carta Drink</p>
-        <h1>Il menu completo del bar</h1>
+        <h1>Cocktail</h1>
         <p>
-            Esplora la nostra selezione di cocktail. Scegli il tuo preferito o lasciati ispirare dalle nostre proposte esclusive.
+            Signature, spritz e miscelati pensati per accompagnare aperitivi, musica e serate in riva al fiume.
         </p>
     </header>
 
@@ -17,7 +17,7 @@ $groupedDrinks = $groupedDrinks ?? [];
 
     <div class="menu-page__layout">
         <aside class="menu-page__sidebar">
-            <h2>Categorie</h2>
+            <h2>Scegli il tuo drink</h2>
             <?php $include('components/category_tabs.php', [
                 'categories' => $categories,
                 'activeCategory' => $activeCategory,
@@ -30,7 +30,7 @@ $groupedDrinks = $groupedDrinks ?? [];
         <div class="menu-page__sections">
             <?php if (empty($groupedDrinks)): ?>
                 <section class="menu-page__section">
-                    <p class="menu-page__empty">Nessuna categoria drink disponibile. Aggiungile dal backend.</p>
+                    <p class="menu-page__empty">La carta drink della serata sara disponibile a breve.</p>
                 </section>
             <?php endif; ?>
 
@@ -41,12 +41,12 @@ $groupedDrinks = $groupedDrinks ?? [];
                     data-category-section="<?= $e($section['category']['slug'] ?? ''); ?>"
                 >
                     <div class="menu-page__section-head">
-                        <h3><?= $e($section['category']['label'] ?? 'Categoria'); ?></h3>
-                        <p><?= $e($section['category']['description'] ?? 'Descrizione categoria'); ?></p>
+                        <h3><?= $e($section['category']['label'] ?? 'Drink della casa'); ?></h3>
+                        <p><?= $e($section['category']['description'] ?? 'Selezioni pensate per la notte, dal primo brindisi all ultimo giro.'); ?></p>
                     </div>
 
                     <?php if (empty($section['drinks'])): ?>
-                        <p class="menu-page__empty">Nessun drink associato a questa categoria.</p>
+                        <p class="menu-page__empty">Questa selezione sara aggiornata per la prossima serata.</p>
                     <?php else: ?>
                         <?php $include('components/drink_grid.php', ['drinks' => $section['drinks'] ?? []]); ?>
                     <?php endif; ?>

@@ -36,14 +36,17 @@ final class FoodCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
-        yield TextField::new('name', 'Nome');
-        yield TextareaField::new('description', 'Descrizione')->hideOnIndex();
+        yield TextField::new('name', 'Nome')->setRequired(false);
+        yield TextareaField::new('description', 'Descrizione')
+            ->setRequired(false)
+            ->hideOnIndex();
         yield AssociationField::new('foodCategory', 'Categoria cibo')
             ->setRequired(false);
         yield MoneyField::new('price', 'Prezzo')
             ->setCurrency('EUR')
             ->setStoredAsCents(false)
-            ->setNumDecimals(2);
+            ->setNumDecimals(2)
+            ->setRequired(false);
         yield ImageField::new('imageUrl', 'Foto')
             ->setBasePath((string) ManagedMediaStorage::basePathFor(Food::class))
             ->onlyOnIndex();

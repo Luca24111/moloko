@@ -175,7 +175,7 @@ final class FrontendMenuProvider
         return [
             'slug' => 'cat-'.$id,
             'label' => $category->getName() ?? 'Categoria',
-            'description' => $category->getDescription() ?? 'Categoria drink personalizzata dal pannello admin.',
+            'description' => $category->getDescription() ?? '',
         ];
     }
 
@@ -186,7 +186,7 @@ final class FrontendMenuProvider
 
         return [
             'name' => $drink->getName() ?? 'Drink',
-            'description' => $drink->getDescription() ?? 'Descrizione drink non disponibile.',
+            'description' => $drink->getDescription() ?? 'Un drink della casa da scoprire al bancone.',
             'price' => number_format((float) ($drink->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryName),
             'category_slug' => $category !== null ? 'cat-'.($category->getId() ?? 0) : 'uncategorized',
@@ -207,7 +207,7 @@ final class FrontendMenuProvider
 
         return [
             'name' => $food->getName() ?? 'Piatto',
-            'description' => $food->getDescription() ?? 'Descrizione piatto non disponibile.',
+            'description' => $food->getDescription() ?? 'Una proposta da condividere tra aperitivo e serata.',
             'price' => number_format((float) ($food->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryLabel),
             'category_slug' => $category !== null ? 'food-cat-'.($category->getId() ?? 0) : 'food-uncategorized',
@@ -228,7 +228,7 @@ final class FrontendMenuProvider
         return [
             'slug' => 'food-cat-'.$id,
             'label' => $category->getName() ?? 'Categoria',
-            'description' => $category->getDescription() ?? 'Categoria cibo configurata dal pannello admin.',
+            'description' => $category->getDescription() ?? '',
         ];
     }
 
@@ -240,8 +240,8 @@ final class FrontendMenuProvider
 
         return [
             'title' => $event->getTitle() ?? 'Evento',
-            'description' => $event->getDescription() ?? 'Dettagli evento in aggiornamento.',
-            'location' => $event->getLocation() ?? 'Location da definire',
+            'description' => $event->getDescription() ?? 'Musica, drink e atmosfera in riva al Po.',
+            'location' => $event->getLocation() ?? 'Moloch, Borgoforte',
             'image' => $this->mediaStorage->resolvePublicUrl(
                 Event::class,
                 $event->getCoverImageUrl(),

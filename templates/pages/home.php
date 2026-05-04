@@ -10,12 +10,11 @@ $quickLinks = $quickLinks ?? [];
 
     <section class="home-page__quicklinks">
         <div class="home-page__heading">
-            <h2>Accesso rapido</h2>
-            <p>Tre scorciatoie utili per arrivare subito dove serve.</p>
+            
         </div>
 
         <?php if (empty($quickLinks)): ?>
-            <p class="home-page__empty">Nessun collegamento disponibile al momento.</p>
+            <p class="home-page__empty">Le proposte della serata saranno disponibili a breve.</p>
         <?php else: ?>
             <div class="home-page__link-grid">
                 <?php foreach ($quickLinks as $item): ?>

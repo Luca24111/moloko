@@ -25,7 +25,7 @@ final class MenuController extends AbstractPageController
 
         return $this->renderPage('pages/menu.php', [
             'title' => 'Menu Drink | moloch',
-            'description' => 'Carta cocktail completa con categorie create dal pannello admin.',
+            'description' => 'Cocktail, spritz e signature drink per le serate in riva al Po.',
             'currentRoute' => 'menu',
             'styles' => [
                 'css/components/category-tabs.css',

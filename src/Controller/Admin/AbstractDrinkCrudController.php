@@ -42,8 +42,10 @@ abstract class AbstractDrinkCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
-        yield TextField::new('name', 'Nome');
-        yield TextareaField::new('description', 'Descrizione')->hideOnIndex();
+        yield TextField::new('name', 'Nome')->setRequired(false);
+        yield TextareaField::new('description', 'Descrizione')
+            ->setRequired(false)
+            ->hideOnIndex();
         yield AssociationField::new('drinkCategory', 'Categoria drink')
             ->setRequired(false);
         yield BooleanField::new('isSpecial', 'Speciale');
@@ -51,7 +53,8 @@ abstract class AbstractDrinkCrudController extends AbstractCrudController
         yield MoneyField::new('price', 'Prezzo')
             ->setCurrency('EUR')
             ->setNumDecimals(2)
-            ->setStoredAsCents(false);
+            ->setStoredAsCents(false)
+            ->setRequired(false);
         yield ImageField::new('imageUrl', 'Immagine')
             ->setBasePath((string) ManagedMediaStorage::basePathFor(Drink::class))
             ->onlyOnIndex();

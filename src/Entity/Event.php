@@ -13,19 +13,19 @@ class Event
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, nullable: true)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $startsAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $endsAt = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, nullable: true)]
     private ?string $location = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
@@ -65,9 +65,9 @@ class Event
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
-        $this->title = trim($title);
+        $this->title = $title !== null ? trim($title) : null;
         $this->touch();
 
         return $this;
@@ -91,7 +91,7 @@ class Event
         return $this->startsAt;
     }
 
-    public function setStartsAt(\DateTimeImmutable $startsAt): static
+    public function setStartsAt(?\DateTimeImmutable $startsAt): static
     {
         $this->startsAt = $startsAt;
         $this->touch();
@@ -117,9 +117,9 @@ class Event
         return $this->location;
     }
 
-    public function setLocation(string $location): static
+    public function setLocation(?string $location): static
     {
-        $this->location = trim($location);
+        $this->location = $location !== null ? trim($location) : null;
         $this->touch();
 
         return $this;

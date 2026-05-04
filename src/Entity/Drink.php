@@ -13,13 +13,13 @@ class Drink
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 140)]
+    #[ORM\Column(length: 140, nullable: true)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2, nullable: true)]
     private ?string $price = null;
 
     #[ORM\Column(options: ['default' => true])]
@@ -66,9 +66,9 @@ class Drink
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
-        $this->name = trim($name);
+        $this->name = $name !== null ? trim($name) : null;
         $this->touch();
 
         return $this;
@@ -92,7 +92,7 @@ class Drink
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(?string $price): static
     {
         $this->price = $price;
         $this->touch();
