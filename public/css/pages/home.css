@@ -3,6 +3,7 @@
     gap: 1rem;
 }
 
+.home-page__events,
 .home-page__quicklinks {
     display: grid;
     gap: 0.8rem;
@@ -15,6 +16,14 @@
 .home-page__heading {
     display: grid;
     gap: 0.25rem;
+}
+
+.home-page__kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-strong);
+    font-size: 0.74rem;
+    font-weight: 800;
 }
 
 .home-page__heading h2 {

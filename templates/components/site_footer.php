@@ -5,12 +5,17 @@ $year = $year ?? (int) date('Y');
 <footer class="site-footer">
     <div class="site-footer__brand">
         <a href="/" class="brand-mark brand-mark--footer">
-            <img
-                class="brand-mark__logo"
-                src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
-                alt=""
-                aria-hidden="true"
-            >
+            <picture class="brand-mark__logo" aria-hidden="true">
+                <source srcset="<?= $e($asset('images/home/logo/logo_moloch.webp')); ?>" type="image/webp">
+                <img
+                    class="brand-mark__logo"
+                    src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                >
+            </picture>
             <span class="brand-mark__text">molo<span class="brand-mark__k">ch</span></span>
         </a>
         <p>
@@ -23,11 +28,15 @@ $year = $year ?? (int) date('Y');
         <h3>Dove trovarci</h3>
         <ul>
             <li>
-                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                <span class="site-footer__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1-.24 11.37 11.37 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.49a1 1 0 0 1 1 1 11.37 11.37 0 0 0 .57 3.57 1 1 0 0 1-.24 1Z" fill="currentColor"/></svg>
+                </span>
                 <a href="tel:+3903761689042">0376 168 9042</a>
             </li>
             <li>
-                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                <span class="site-footer__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2.2A2.8 2.8 0 0 0 4.2 7v10A2.8 2.8 0 0 0 7 19.8h10a2.8 2.8 0 0 0 2.8-2.8V7A2.8 2.8 0 0 0 17 4.2Zm10.3 1.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Z" fill="currentColor"/></svg>
+                </span>
                 <a
                     href="https://www.instagram.com/moloch_lidopo/"
                     target="_blank"
@@ -37,11 +46,15 @@ $year = $year ?? (int) date('Y');
                 </a>
             </li>
             <li>
-                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <span class="site-footer__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M12 22s7-6.17 7-12a7 7 0 1 0-14 0c0 5.83 7 12 7 12Zm0-9a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" fill="currentColor"/></svg>
+                </span>
                 <span>Via Al Ponte 1, Borgoforte 46030</span>
             </li>
             <li>
-                <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                <span class="site-footer__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 5v4.38l3.2 1.92-1 1.7L11 12.5V7Z" fill="currentColor"/></svg>
+                </span>
                 <span>Aperto da martedi a domenica, 17:00 - 2:00 AM</span>
             </li>
         </ul>

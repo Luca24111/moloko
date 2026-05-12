@@ -39,7 +39,23 @@ final class HomeCardImageResolver
             return [];
         }
 
-        sort($files, \SORT_NATURAL | \SORT_FLAG_CASE);
+        usort($files, static function (string $left, string $right): int {
+            $extensionPriority = [
+                'avif' => 0,
+                'webp' => 1,
+                'jpg' => 2,
+                'jpeg' => 3,
+                'png' => 4,
+                'gif' => 5,
+            ];
+
+            $leftExtension = strtolower(pathinfo($left, \PATHINFO_EXTENSION));
+            $rightExtension = strtolower(pathinfo($right, \PATHINFO_EXTENSION));
+            $leftPriority = $extensionPriority[$leftExtension] ?? 99;
+            $rightPriority = $extensionPriority[$rightExtension] ?? 99;
+
+            return [$leftPriority, strtolower($left)] <=> [$rightPriority, strtolower($right)];
+        });
 
         return array_values(array_filter($files, 'is_file'));
     }

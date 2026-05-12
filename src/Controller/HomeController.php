@@ -28,6 +28,7 @@ final class HomeController extends AbstractPageController
             'url' => $event['image'] ?? '',
             'alt' => $event['title'] ?? 'Evento',
             'title' => $event['title'] ?? 'Evento',
+            'time' => $event['time_label'] ?? '',
             'meta' => $event['date_range_label'] ?? '',
         ], array_slice($events, 0, 3));
 
@@ -46,6 +47,7 @@ final class HomeController extends AbstractPageController
             'currentRoute' => 'home',
             'styles' => [
                 'css/components/hero.css',
+                'css/components/event-card.css',
                 'css/components/feature-banner.css',
                 'css/pages/home.css',
             ],
@@ -67,6 +69,7 @@ final class HomeController extends AbstractPageController
                     ['label' => 'Stili da provare', 'value' => (string) $this->menuProvider->countCategories()],
                     ['label' => 'Serate in programma', 'value' => (string) $this->menuProvider->countPublishedEvents()],
                 ],
+                'events' => $events,
                 'quickLinks' => [
                     [
                         'eyebrow' => 'Drink',

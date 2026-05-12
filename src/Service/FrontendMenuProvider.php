@@ -33,22 +33,15 @@ final class FrontendMenuProvider
             ->getRepository(DrinkCategory::class)
             ->findBy(['isActive' => true], ['displayOrder' => 'ASC', 'name' => 'ASC']);
 
-        $groups = [];
-        foreach ($categories as $category) {
-            $drinks = $this->createEnabledDrinkQueryBuilder()
-                ->andWhere('drink.drinkCategory = :category')
-                ->setParameter('category', $category)
-                ->orderBy('drink.name', 'ASC')
-                ->getQuery()
-                ->getResult();
+        $drinks = $this->createEnabledDrinkQueryBuilder()
+            ->andWhere('category.id IS NULL OR category.isActive = :categoryActive')
+            ->setParameter('categoryActive', true)
+            ->orderBy('category.displayOrder', 'ASC')
+            ->addOrderBy('drink.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-            $groups[] = [
-                'category' => $this->mapCategory($category),
-                'drinks' => array_map(fn (Drink $drink): array => $this->mapDrink($drink), $drinks),
-            ];
-        }
-
-        return $groups;
+        return $this->groupDrinksByCategory($categories, $drinks);
     }
 
     public function getSpecialDrinks(int $limit = 0): array
@@ -80,12 +73,8 @@ final class FrontendMenuProvider
 
     public function getPublishedEvents(int $limit = 0): array
     {
-        $queryBuilder = $this->entityManager
-            ->getRepository(Event::class)
-            ->createQueryBuilder('event')
-            ->andWhere('event.isPublished = :isPublished')
-            ->andWhere('event.startsAt >= :today')
-            ->setParameter('isPublished', true)
+        $queryBuilder = $this->createPublishedEventQueryBuilder()
+            ->andWhere('COALESCE(event.endsAt, event.startsAt) >= :today')
             ->setParameter('today', new \DateTimeImmutable('today'))
             ->orderBy('event.startsAt', 'ASC')
             ->addOrderBy('event.id', 'DESC');
@@ -95,13 +84,38 @@ final class FrontendMenuProvider
         }
 
         $events = $queryBuilder->getQuery()->getResult();
+        if ($events === []) {
+            $fallbackQueryBuilder = $this->createPublishedEventQueryBuilder()
+                ->orderBy('event.updatedAt', 'DESC')
+                ->addOrderBy('event.id', 'DESC');
+
+            if ($limit > 0) {
+                $fallbackQueryBuilder->setMaxResults($limit);
+            }
+
+            $events = $fallbackQueryBuilder->getQuery()->getResult();
+        }
 
         return array_map(fn (Event $event): array => $this->mapEvent($event), $events);
     }
 
     public function countPublishedEvents(): int
     {
-        return $this->entityManager->getRepository(Event::class)->count(['isPublished' => true]);
+        $upcomingCount = (int) $this->createPublishedEventQueryBuilder()
+            ->select('COUNT(event.id)')
+            ->andWhere('COALESCE(event.endsAt, event.startsAt) >= :today')
+            ->setParameter('today', new \DateTimeImmutable('today'))
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if ($upcomingCount > 0) {
+            return $upcomingCount;
+        }
+
+        return (int) $this->createPublishedEventQueryBuilder()
+            ->select('COUNT(event.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function countFoods(): int
@@ -149,23 +163,16 @@ final class FrontendMenuProvider
             ->getRepository(FoodCategory::class)
             ->findBy(['isActive' => true], ['displayOrder' => 'ASC', 'name' => 'ASC']);
 
-        $groups = [];
-        foreach ($categories as $category) {
-            $foods = $this->createEnabledFoodQueryBuilder()
-                ->andWhere('food.foodCategory = :foodCategory')
-                ->setParameter('foodCategory', $category)
-                ->orderBy('food.isSpecial', 'DESC')
-                ->addOrderBy('food.name', 'ASC')
-                ->getQuery()
-                ->getResult();
+        $foods = $this->createEnabledFoodQueryBuilder()
+            ->andWhere('category.id IS NULL OR category.isActive = :categoryActive')
+            ->setParameter('categoryActive', true)
+            ->orderBy('food.isSpecial', 'DESC')
+            ->addOrderBy('category.displayOrder', 'ASC')
+            ->addOrderBy('food.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-            $groups[] = [
-                'category' => $this->mapFoodCategory($category),
-                'foods' => array_map(fn (Food $food): array => $this->mapFood($food), $foods),
-            ];
-        }
-
-        return $groups;
+        return $this->groupFoodsByCategory($categories, $foods);
     }
 
     private function mapCategory(DrinkCategory $category): array
@@ -248,7 +255,7 @@ final class FrontendMenuProvider
                 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80'
             ),
             'starts_at_label' => $this->formatShortEventDate($startsAt),
-            'time_label' => '',
+            'time_label' => $this->formatEventTimeRange($startsAt, $endsAt),
             'date_range_label' => $this->formatEventDateRange($startsAt, $endsAt),
             'ticket_label' => $ticketPrice !== null ? '€ '.number_format((float) $ticketPrice, 2, '.', '') : 'Ingresso libero',
             'is_free_entry' => $ticketPrice === null,
@@ -273,6 +280,24 @@ final class FrontendMenuProvider
         return $date->format('d/m');
     }
 
+    private function formatEventTimeRange(\DateTimeImmutable $startsAt, ?\DateTimeImmutable $endsAt): string
+    {
+        if ($endsAt === null || $startsAt->format('Y-m-d') !== $endsAt->format('Y-m-d')) {
+            return $startsAt->format('H:i');
+        }
+
+        return $startsAt->format('H:i').' - '.$endsAt->format('H:i');
+    }
+
+    private function createPublishedEventQueryBuilder(): QueryBuilder
+    {
+        return $this->entityManager
+            ->getRepository(Event::class)
+            ->createQueryBuilder('event')
+            ->andWhere('event.isPublished = :isPublished')
+            ->setParameter('isPublished', true);
+    }
+
     private function createEnabledDrinkQueryBuilder(): QueryBuilder
     {
         return $this->entityManager
@@ -293,5 +318,69 @@ final class FrontendMenuProvider
             ->addSelect('category')
             ->andWhere('food.isEnabled = :isEnabled')
             ->setParameter('isEnabled', true);
+    }
+
+    /**
+     * @param list<DrinkCategory> $categories
+     * @param list<Drink> $drinks
+     * @return list<array{category: array<string, string>, drinks: list<array<string, mixed>>}>
+     */
+    private function groupDrinksByCategory(array $categories, array $drinks): array
+    {
+        $groups = [];
+        foreach ($categories as $category) {
+            $categoryId = $category->getId();
+            if ($categoryId === null) {
+                continue;
+            }
+
+            $groups[$categoryId] = [
+                'category' => $this->mapCategory($category),
+                'drinks' => [],
+            ];
+        }
+
+        foreach ($drinks as $drink) {
+            $categoryId = $drink->getDrinkCategory()?->getId();
+            if ($categoryId === null || !array_key_exists($categoryId, $groups)) {
+                continue;
+            }
+
+            $groups[$categoryId]['drinks'][] = $this->mapDrink($drink);
+        }
+
+        return array_values($groups);
+    }
+
+    /**
+     * @param list<FoodCategory> $categories
+     * @param list<Food> $foods
+     * @return list<array{category: array<string, string>, foods: list<array<string, mixed>>}>
+     */
+    private function groupFoodsByCategory(array $categories, array $foods): array
+    {
+        $groups = [];
+        foreach ($categories as $category) {
+            $categoryId = $category->getId();
+            if ($categoryId === null) {
+                continue;
+            }
+
+            $groups[$categoryId] = [
+                'category' => $this->mapFoodCategory($category),
+                'foods' => [],
+            ];
+        }
+
+        foreach ($foods as $food) {
+            $categoryId = $food->getFoodCategory()?->getId();
+            if ($categoryId === null || !array_key_exists($categoryId, $groups)) {
+                continue;
+            }
+
+            $groups[$categoryId]['foods'][] = $this->mapFood($food);
+        }
+
+        return array_values($groups);
     }
 }

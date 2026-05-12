@@ -3,7 +3,7 @@
 ## Requisiti
 
 - PHP 8.1 o superiore.
-- Estensioni PHP `ctype`, `iconv`, `pdo_mysql`.
+- Estensioni PHP `ctype`, `gd`, `iconv`, `pdo_mysql`.
 - Web server con document root puntata a `public/`.
 - Database MySQL/MariaDB raggiungibile dal server.
 - Cartelle scrivibili dal processo PHP: `var/` e `public/uploads/`.
@@ -30,6 +30,7 @@ Non inserire credenziali reali in `.env`, perche e un file versionato.
 ```bash
 composer install --no-dev --optimize-autoloader
 composer dump-env prod
+php bin/console app:optimize-images --env=prod
 php bin/console cache:clear --env=prod --no-debug
 php bin/console cache:warmup --env=prod --no-debug
 ```

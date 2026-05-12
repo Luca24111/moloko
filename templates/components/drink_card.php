@@ -9,6 +9,7 @@ $className = $compact ? 'drink-card drink-card--compact' : 'drink-card';
         src="<?= $e($drink['image'] ?? ''); ?>"
         alt="<?= $e($drink['name'] ?? 'Cocktail'); ?>"
         loading="lazy"
+        decoding="async"
     >
 
     <div class="drink-card__body">

@@ -43,11 +43,18 @@
     line-height: 1.45;
 }
 
-.site-footer__contact i {
+.site-footer__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.1rem;
+    block-size: 1.1rem;
     color: var(--accent-strong);
-    font-size: 0.98rem;
-    line-height: 1.45;
-    text-align: center;
+}
+
+.site-footer__icon svg {
+    inline-size: 100%;
+    block-size: 100%;
 }
 
 .site-footer__contact a,

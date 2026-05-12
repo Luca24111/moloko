@@ -35,7 +35,14 @@ abstract class AbstractPageController
             'year' => (int) date('Y'),
         ];
 
-        return new Response($this->renderer->render('layouts/main.php', $payload));
+        $content = $this->renderer->render('layouts/main.php', $payload);
+        $response = new Response($content);
+        $response->setPublic();
+        $response->setMaxAge(300);
+        $response->setSharedMaxAge(300);
+        $response->setEtag(sha1($content));
+
+        return $response;
     }
 
     private function navItems(): array

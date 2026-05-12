@@ -20,6 +20,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Image as ImageConstraint;
 
 abstract class AbstractDrinkCrudController extends AbstractCrudController
 {
@@ -62,8 +64,21 @@ abstract class AbstractDrinkCrudController extends AbstractCrudController
             ->setBasePath((string) ManagedMediaStorage::basePathFor(Drink::class))
             ->setUploadDir((string) ManagedMediaStorage::uploadDirFor(Drink::class))
             ->setUploadedFileNamePattern(ManagedMediaStorage::UPLOAD_FILENAME_PATTERN)
+            ->setFormTypeOption('constraints', [
+                new File(
+                    maxSize: '8M',
+                    mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+                    mimeTypesMessage: 'Carica immagini JPG, PNG o WebP.'
+                ),
+                new ImageConstraint(
+                    maxWidth: 3200,
+                    maxHeight: 3200,
+                    maxWidthMessage: 'L immagine e troppo larga. Usa massimo 3200px.',
+                    maxHeightMessage: 'L immagine e troppo alta. Usa massimo 3200px.'
+                ),
+            ])
             ->setRequired(false)
-            ->setHelp('Carica un file dal dispositivo. Il file verra gestito e pulito automaticamente dal sistema.')
+            ->setHelp('Carica JPG, PNG o WebP fino a 8MB. Il sistema ridimensiona e comprime automaticamente il file.')
             ->hideOnIndex();
         yield TextField::new('imageUrl', 'File salvato')
             ->setDisabled()

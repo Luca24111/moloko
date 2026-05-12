@@ -26,6 +26,10 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
+    App\Command\OptimizeImagesCommand:
+        tags:
+            - { name: 'console.command', command: 'app:optimize-images' }
+
     App\Security\EnvAdminUserProvider:
         arguments:
             $adminUser: '%app.admin_user%'

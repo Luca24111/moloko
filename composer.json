@@ -8,8 +8,10 @@
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
+        "ext-gd": "*",
         "ext-iconv": "*",
         "easycorp/easyadmin-bundle": "^4.29",
+        "intervention/image": "^3.0",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",
         "symfony/flex": "^2",
@@ -57,6 +59,7 @@
             "@php bin/console lint:container --env=prod --no-debug",
             "@php bin/console doctrine:schema:validate --skip-sync --env=prod --no-debug"
         ],
+        "images:optimize": "@php bin/console app:optimize-images",
         "post-install-cmd": [
             "@auto-scripts"
         ],

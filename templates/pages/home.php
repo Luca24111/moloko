@@ -1,6 +1,7 @@
 <?php
 $hero = $hero ?? [];
 $stats = $stats ?? [];
+$events = $events ?? [];
 $quickLinks = $quickLinks ?? [];
 ?>
 <section class="home-page">
@@ -8,9 +9,13 @@ $quickLinks = $quickLinks ?? [];
 
     <?php $include('components/feature_banner.php', ['items' => $stats]); ?>
 
+
+
     <section class="home-page__quicklinks">
         <div class="home-page__heading">
-            
+            <p class="home-page__kicker">Menu</p>
+            <h2>Drink e cucina</h2>
+            <p>Accedi subito alle due carte principali del locale.</p>
         </div>
 
         <?php if (empty($quickLinks)): ?>
@@ -24,6 +29,8 @@ $quickLinks = $quickLinks ?? [];
                             src="<?= $e($item['image'] ?? ''); ?>"
                             alt="<?= $e($item['alt'] ?? ($item['eyebrow'] ?? 'Link')); ?>"
                             loading="lazy"
+                            decoding="async"
+                            fetchpriority="low"
                         >
                         <span class="home-page__link-eyebrow"><?= $e($item['eyebrow'] ?? 'Link'); ?></span>
                     </a>

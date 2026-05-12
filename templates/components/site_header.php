@@ -4,12 +4,15 @@ $currentRoute = $currentRoute ?? '';
 ?>
 <header class="site-header">
     <a href="/" class="brand-mark" aria-label="moloch home">
-        <img
-            class="brand-mark__logo"
-            src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
-            alt=""
-            aria-hidden="true"
-        >
+        <picture class="brand-mark__logo" aria-hidden="true">
+            <source srcset="<?= $e($asset('images/home/logo/logo_moloch.webp')); ?>" type="image/webp">
+            <img
+                class="brand-mark__logo"
+                src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
+                alt=""
+                aria-hidden="true"
+            >
+        </picture>
         <span class="brand-mark__text">molo<span class="brand-mark__k">ch</span></span>
     </a>
 

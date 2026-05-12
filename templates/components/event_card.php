@@ -7,6 +7,7 @@ $event = $event ?? [];
         src="<?= $e($event['image'] ?? ''); ?>"
         alt="<?= $e($event['title'] ?? 'Evento'); ?>"
         loading="lazy"
+        decoding="async"
     >
 
     <div class="event-card__body">

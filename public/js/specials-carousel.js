@@ -13,9 +13,28 @@
 
         var index = 0;
         var timer = null;
+        var ensureImage = function (slide) {
+            if (!slide) {
+                return;
+            }
+
+            var image = slide.querySelector('img[data-src]');
+            if (!image) {
+                return;
+            }
+
+            image.setAttribute('src', image.getAttribute('data-src') || '');
+            image.removeAttribute('data-src');
+        };
+
+        var preloadAround = function (currentIndex) {
+            ensureImage(slides[currentIndex]);
+            ensureImage(slides[(currentIndex + 1) % slides.length]);
+        };
 
         var show = function (newIndex) {
             index = (newIndex + slides.length) % slides.length;
+            preloadAround(index);
 
             slides.forEach(function (slide, idx) {
                 var active = idx === index;
@@ -62,6 +81,7 @@
             });
         });
 
+        preloadAround(0);
         show(0);
         resetAuto();
     });

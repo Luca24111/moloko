@@ -14,12 +14,15 @@
 <div class="admin-login-shell">
     <div class="admin-login-card">
         <a href="{{ path('home') }}" class="admin-login-brand">
-            <img
-                class="admin-login-brand__logo"
-                src="{{ asset('images/home/logo/logo_moloch.png') }}"
-                alt=""
-                aria-hidden="true"
-            >
+            <picture class="admin-login-brand__logo" aria-hidden="true">
+                <source srcset="{{ asset('images/home/logo/logo_moloch.webp') }}" type="image/webp">
+                <img
+                    class="admin-login-brand__logo"
+                    src="{{ asset('images/home/logo/logo_moloch.png') }}"
+                    alt=""
+                    aria-hidden="true"
+                >
+            </picture>
             <span>molo<span class="admin-login-brand__k">ch</span></span>
         </a>
 

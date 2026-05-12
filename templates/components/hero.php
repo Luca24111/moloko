@@ -7,6 +7,7 @@ $secondaryCta = $secondaryCta ?? null;
 $slides = $slides ?? [];
 $badge = $badge ?? null;
 $visualOnly = (bool) ($visualOnly ?? false);
+$placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 ?>
 <section class="hero<?= $visualOnly ? ' hero--visual-only' : ''; ?>">
     <?php if ($title !== ''): ?>
@@ -20,13 +21,24 @@ $visualOnly = (bool) ($visualOnly ?? false);
             <?php foreach ($slides as $index => $slide): ?>
                 <?php $isActive = $index === 0; ?>
                 <figure class="hero__slide<?= $isActive ? ' is-active' : ''; ?>"<?= $isActive ? '' : ' hidden'; ?>>
-                    <img src="<?= $e($slide['url'] ?? ''); ?>" alt="<?= $e($slide['alt'] ?? 'Slide principale'); ?>">
+                    <?php $slideUrl = $slide['url'] ?? ''; ?>
+                    <img
+                        src="<?= $e($isActive ? $slideUrl : $placeholderImage); ?>"
+                        <?php if (!$isActive): ?>data-src="<?= $e($slideUrl); ?>" loading="lazy"<?php else: ?>fetchpriority="high"<?php endif; ?>
+                        alt="<?= $e($slide['alt'] ?? 'Slide principale'); ?>"
+                        decoding="async"
+                    >
                     <?php $slideTitle = trim((string) ($slide['title'] ?? '')); ?>
+                    <?php $slideTime = trim((string) ($slide['time'] ?? '')); ?>
                     <?php $slideMeta = trim((string) ($slide['meta'] ?? ('€ '.($slide['price'] ?? '0.00')))); ?>
-                    <?php if ($slideTitle !== '' || $slideMeta !== ''): ?>
+                    <?php if ($slideTitle !== '' || $slideTime !== '' || $slideMeta !== ''): ?>
                         <figcaption class="hero__caption">
-                            <?php if ($slideTitle !== ''): ?>
-                                <strong class="hero__event-title"><?= $e($slideTitle); ?></strong>
+                            <?php if ($slideTitle !== '' || $slideTime !== ''): ?>
+                                <div class="hero__event-copy">
+                                    <?php if ($slideTitle !== ''): ?>
+                                        <strong class="hero__event-title"><?= $e($slideTitle); ?></strong>
+                                    <?php endif; ?>
+                                </div>
                             <?php endif; ?>
                             <?php if ($slideMeta !== ''): ?>
                                 <span class="hero__event-date"><?= $e($slideMeta); ?></span>

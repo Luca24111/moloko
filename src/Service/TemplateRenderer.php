@@ -14,9 +14,19 @@ final class TemplateRenderer
     public function render(string $template, array $context = []): string
     {
         $templatePath = $this->resolveTemplatePath($template);
+        $publicDir = rtrim($this->kernel->getProjectDir(), '/').'/public';
 
         $escape = static fn (mixed $value): string => htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $asset = static fn (string $path): string => '/'.ltrim($path, '/');
+        $asset = static function (string $path) use ($publicDir): string {
+            $normalizedPath = '/'.ltrim($path, '/');
+            $absolutePath = $publicDir.$normalizedPath;
+
+            if (!is_file($absolutePath)) {
+                return $normalizedPath;
+            }
+
+            return sprintf('%s?v=%s', $normalizedPath, dechex((int) filemtime($absolutePath)));
+        };
 
         $include = function (string $partial, array $locals = []) use (&$include, $escape, $asset): void {
             $partialPath = $this->resolveTemplatePath($partial);
