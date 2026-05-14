@@ -15,7 +15,6 @@ $quickLinks = $quickLinks ?? [];
         <div class="home-page__heading">
             <p class="home-page__kicker">Menu</p>
             <h2>Drink e cucina</h2>
-            <p>Accedi subito alle due carte principali del locale.</p>
         </div>
 
         <?php if (empty($quickLinks)): ?>

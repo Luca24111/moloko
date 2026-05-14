@@ -8,9 +8,6 @@ $groupedDrinks = $groupedDrinks ?? [];
     <header class="menu-page__header">
         <p class="menu-page__kicker">Carta Drink</p>
         <h1>Cocktail</h1>
-        <p>
-            Signature, spritz e miscelati pensati per accompagnare aperitivi, musica e serate in riva al fiume.
-        </p>
     </header>
 
     

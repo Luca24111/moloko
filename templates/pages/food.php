@@ -6,10 +6,8 @@ $groupedFoods = $groupedFoods ?? [];
 <section class="food-page" data-menu-filter>
     <header class="food-page__header">
         <p class="food-page__kicker">Cucina</p>
-        <h1>Sapori da condividere</h1>
-        <p>
-            Piatti, sfizi e proposte leggere per accompagnare aperitivo, cena e dopocena.
-        </p>
+        <h1>Sfiziosità</h1>
+
     </header>
 
     <div class="food-page__layout">
