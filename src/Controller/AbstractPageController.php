@@ -21,11 +21,16 @@ abstract class AbstractPageController
             $options['styles'] ?? []
         )));
 
+        $scripts = array_values(array_unique(array_merge(
+            ['js/lazy-media.js'],
+            $options['scripts'] ?? []
+        )));
+
         $payload = [
             'title' => $options['title'] ?? 'moloch Bar',
             'description' => $options['description'] ?? 'Cocktail menu stagionale e atmosfera contemporanea.',
             'styles' => $styles,
-            'scripts' => $options['scripts'] ?? [],
+            'scripts' => $scripts,
             'bodyClass' => $options['bodyClass'] ?? '',
             'contentTemplate' => $contentTemplate,
             'contentData' => $options['content'] ?? [],

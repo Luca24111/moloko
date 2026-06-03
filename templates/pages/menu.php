@@ -8,6 +8,7 @@ $groupedDrinks = $groupedDrinks ?? [];
     <header class="menu-page__header">
         <p class="menu-page__kicker">Carta Drink</p>
         <h1>Cocktail</h1>
+        
     </header>
 
     

@@ -64,13 +64,17 @@
     z-index: 1;
     display: grid;
     place-items: center;
+    padding: 1rem;
     color: var(--accent);
-    font-size: 40cqmin;
+    max-inline-size: 100%;
+    font-size: clamp(2.4rem, 24cqi, 7rem);
     font-weight: 800;
     line-height: 0.9;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    text-align: center;
     text-transform: uppercase;
     text-shadow: 0 2px 0 rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
     pointer-events: none;
 }
 
@@ -90,5 +94,19 @@
 @media (min-width: 761px) {
     .home-page__link-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .home-page__link-card,
+    .home-page__link-image {
+        min-height: 220px;
+    }
+
+    .home-page__link-eyebrow {
+        padding-inline: 0.8rem;
+        font-size: clamp(1.7rem, 16vw, 3.8rem);
+        line-height: 0.9;
+        letter-spacing: 0;
     }
 }

@@ -1,19 +1,22 @@
 <?php
 $footerLinks = $footerLinks ?? [];
 $year = $year ?? (int) date('Y');
+$placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 ?>
 <footer class="site-footer">
     <div class="site-footer__brand">
         <a href="/" class="brand-mark brand-mark--footer">
-            <picture class="brand-mark__logo" aria-hidden="true">
-                <source srcset="<?= $e($asset('images/home/logo/logo_moloch.webp')); ?>" type="image/webp">
+            <picture class="brand-mark__logo" aria-hidden="true" data-lazy-picture>
+                <source data-lazy-srcset="<?= $e($asset('images/home/logo/logo_moloch.webp')); ?>" type="image/webp">
                 <img
                     class="brand-mark__logo"
-                    src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
+                    src="<?= $e($placeholderImage); ?>"
+                    data-lazy-src="<?= $e($asset('images/home/logo/logo_moloch.png')); ?>"
                     alt=""
                     aria-hidden="true"
                     loading="lazy"
                     decoding="async"
+                    fetchpriority="low"
                 >
             </picture>
             <span class="brand-mark__text">molo<span class="brand-mark__k">ch</span></span>

@@ -245,3 +245,53 @@ composer prod:cache
 ```
 
 Controlla che `/`, `/menu`, `/food`, `/login` e `/admin` rispondano correttamente.
+
+## Deploy rapido con nip.io
+
+`nip.io` fornisce solo DNS wildcard: per usarlo davvero serve una macchina con IP pubblico e porte `80` e `443` aperte verso Internet.
+
+File aggiunti:
+
+- `Dockerfile`
+- `Caddyfile`
+- `docker-compose.nipio.yml`
+- `deploy/.env.nipio.example`
+- `deploy/nipio-up.sh`
+
+Flusso minimo:
+
+```bash
+cp deploy/.env.nipio.example deploy/.env.nipio.local
+```
+
+Imposta almeno:
+
+```dotenv
+PUBLIC_IP=your.public.ip.address
+APP_ADMIN_USER=admin@example.com
+APP_ADMIN_PASSWORD=strong-password
+MYSQL_PASSWORD=strong-db-password
+MYSQL_ROOT_PASSWORD=strong-root-password
+APP_SECRET=long-random-secret
+```
+
+Poi lancia:
+
+```bash
+sh deploy/nipio-up.sh
+```
+
+Lo script costruisce il dominio nel formato:
+
+```text
+https://moloch-AAA-BBB-CCC-DDD.nip.io
+```
+
+dove `AAA.BBB.CCC.DDD` e il tuo IP pubblico.
+
+Note operative:
+
+- serve Docker Compose installato sulla macchina pubblica;
+- al primo avvio viene eseguito `doctrine:schema:update --force`;
+- le immagini caricate restano persistenti nel volume `app_uploads`;
+- i certificati TLS automatici di Caddy restano persistenti nel volume `caddy_data`.

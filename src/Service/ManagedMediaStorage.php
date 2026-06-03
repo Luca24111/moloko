@@ -67,7 +67,9 @@ final class ManagedMediaStorage
             return $fallback;
         }
 
-        return rtrim($basePath, '/').'/'.ltrim($path, '/');
+        $preferredPath = $this->preferredVariantPath($entity, $path);
+
+        return rtrim($basePath, '/').'/'.ltrim($preferredPath ?? $path, '/');
     }
 
     public function deleteStoredFile(object|string $entity, ?string $storedPath): void
@@ -109,6 +111,27 @@ final class ManagedMediaStorage
         }
 
         return $this->projectDir.'/public/'.$normalizedBasePath.ltrim($path, '/');
+    }
+
+    private function preferredVariantPath(object|string $entity, string $storedPath): ?string
+    {
+        $normalizedPath = ltrim($storedPath, '/');
+        $extension = strtolower(pathinfo($normalizedPath, \PATHINFO_EXTENSION));
+        if ($extension === '' || $extension === 'webp') {
+            return null;
+        }
+
+        $absolutePath = $this->absolutePathFor($entity, $storedPath);
+        if ($absolutePath === null) {
+            return null;
+        }
+
+        $variantPath = preg_replace('/\.[^.]+$/', '.webp', $absolutePath);
+        if (!is_string($variantPath) || !is_file($variantPath)) {
+            return null;
+        }
+
+        return preg_replace('/\.[^.]+$/', '.webp', $normalizedPath) ?: null;
     }
 
     private function isExternalPath(string $path): bool

@@ -3,6 +3,7 @@ $hero = $hero ?? [];
 $stats = $stats ?? [];
 $events = $events ?? [];
 $quickLinks = $quickLinks ?? [];
+$placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 ?>
 <section class="home-page">
     <?php $include('components/hero.php', $hero); ?>
@@ -25,7 +26,8 @@ $quickLinks = $quickLinks ?? [];
                     <a class="home-page__link-card" href="<?= $e($item['url'] ?? '/'); ?>">
                         <img
                             class="home-page__link-image"
-                            src="<?= $e($item['image'] ?? ''); ?>"
+                            src="<?= $e($placeholderImage); ?>"
+                            data-lazy-src="<?= $e($item['image'] ?? ''); ?>"
                             alt="<?= $e($item['alt'] ?? ($item['eyebrow'] ?? 'Link')); ?>"
                             loading="lazy"
                             decoding="async"

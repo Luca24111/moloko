@@ -1,14 +1,11 @@
 .git
 .gitignore
-.env*
-!.env.prod.example
+.env
+.env.local
+.env.*.local
 var/*
 !var/.gitkeep
-public/uploads/*
-!public/uploads/.gitkeep
 node_modules
 npm-debug.log
 docker-compose*.yml
 deploy/.env.nipio.local
-._*
-**/._*

@@ -11,8 +11,8 @@ final class ImageOptimizer
 {
     private const MAX_WIDTH = 1920;
     private const MAX_HEIGHT = 1920;
-    private const JPEG_QUALITY = 82;
-    private const WEBP_QUALITY = 80;
+    private const JPEG_QUALITY = 80;
+    private const WEBP_QUALITY = 78;
 
     private readonly ImageManager $imageManager;
 
@@ -46,22 +46,28 @@ final class ImageOptimizer
             return $this->result(false, $before, $before, false, null);
         }
 
-        $image = $this->imageManager->read($absolutePath);
-        $image->scaleDown(width: self::MAX_WIDTH, height: self::MAX_HEIGHT);
+        try {
+            $image = $this->imageManager->read($absolutePath);
+            $image->scaleDown(width: self::MAX_WIDTH, height: self::MAX_HEIGHT);
 
-        $encoded = $this->encodeForExtension($image, $extension);
-        $encoded->save($absolutePath);
+            $encoded = $this->encodeForExtension($image, $extension);
+            $encoded->save($absolutePath);
+            $this->runBinaryOptimizers($absolutePath, $extension);
 
-        $webpCreated = false;
-        $webpPath = null;
+            $webpCreated = false;
+            $webpPath = null;
 
-        if ($createWebpVariant && $extension !== 'webp') {
-            $webpPath = preg_replace('/\.[^.]+$/', '.webp', $absolutePath);
+            if ($createWebpVariant && $extension !== 'webp') {
+                $webpPath = preg_replace('/\.[^.]+$/', '.webp', $absolutePath);
 
-            if (is_string($webpPath) && $webpPath !== '') {
-                $image->toWebp(self::WEBP_QUALITY, strip: true)->save($webpPath);
-                $webpCreated = is_file($webpPath);
+                if (is_string($webpPath) && $webpPath !== '') {
+                    $image->toWebp(self::WEBP_QUALITY, strip: true)->save($webpPath);
+                    $this->runBinaryOptimizers($webpPath, 'webp');
+                    $webpCreated = is_file($webpPath);
+                }
             }
+        } catch (\Throwable) {
+            return $this->result(false, $before, $before, false, null);
         }
 
         clearstatcache(true, $absolutePath);
@@ -85,7 +91,7 @@ final class ImageOptimizer
             return false;
         }
 
-        return $this->optimizeFile($absolutePath)['optimized'];
+        return $this->optimizeFile($absolutePath, true)['optimized'];
     }
 
     public function publicPath(string $absolutePath): ?string
@@ -126,6 +132,81 @@ final class ImageOptimizer
             'webp' => $image->toWebp(self::WEBP_QUALITY, strip: true),
             default => throw new \InvalidArgumentException(sprintf('Unsupported image extension "%s".', $extension)),
         };
+    }
+
+    private function runBinaryOptimizers(string $absolutePath, string $extension): void
+    {
+        if (!is_file($absolutePath) || !is_writable($absolutePath)) {
+            return;
+        }
+
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+                $this->runCommand([
+                    'jpegoptim',
+                    '--strip-all',
+                    '--all-progressive',
+                    '--max='.self::JPEG_QUALITY,
+                    $absolutePath,
+                ]);
+                break;
+
+            case 'png':
+                $this->runCommand([
+                    'pngquant',
+                    '--force',
+                    '--skip-if-larger',
+                    '--quality=65-85',
+                    '--output',
+                    $absolutePath,
+                    '--',
+                    $absolutePath,
+                ]);
+                $this->runCommand(['optipng', '-quiet', '-o2', $absolutePath]);
+                break;
+
+            case 'webp':
+                $temporaryPath = $absolutePath.'.tmp.webp';
+                $this->runCommand([
+                    'cwebp',
+                    '-quiet',
+                    '-q',
+                    (string) self::WEBP_QUALITY,
+                    $absolutePath,
+                    '-o',
+                    $temporaryPath,
+                ]);
+
+                if (is_file($temporaryPath) && filesize($temporaryPath) > 0) {
+                    @rename($temporaryPath, $absolutePath);
+                } elseif (is_file($temporaryPath)) {
+                    @unlink($temporaryPath);
+                }
+                break;
+        }
+    }
+
+    /**
+     * @param list<string> $command
+     */
+    private function runCommand(array $command): void
+    {
+        $descriptors = [
+            0 => ['file', '/dev/null', 'r'],
+            1 => ['file', '/dev/null', 'w'],
+            2 => ['file', '/dev/null', 'w'],
+        ];
+
+        try {
+            $process = @proc_open($command, $descriptors, $pipes);
+            if (!is_resource($process)) {
+                return;
+            }
+
+            proc_close($process);
+        } catch (\Throwable) {
+        }
     }
 
     /**

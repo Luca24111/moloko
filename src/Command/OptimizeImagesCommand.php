@@ -28,7 +28,7 @@ final class OptimizeImagesCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $targets = [
-            $this->projectDir.'/public/images/home',
+            $this->projectDir.'/public/images',
             $this->projectDir.'/public/uploads/media',
         ];
 
@@ -67,8 +67,8 @@ final class OptimizeImagesCommand extends Command
         $savedBytes = 0;
 
         foreach ($files as $path) {
-            $isHomeAsset = str_contains($path, '/public/images/home/');
-            $result = $this->imageOptimizer->optimizeFile($path, $isHomeAsset);
+            $isStaticAsset = str_contains($path, '/public/images/');
+            $result = $this->imageOptimizer->optimizeFile($path, $isStaticAsset);
 
             if ($result['optimized']) {
                 ++$optimizedCount;

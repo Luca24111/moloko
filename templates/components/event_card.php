@@ -1,13 +1,16 @@
 <?php
 $event = $event ?? [];
+$placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 ?>
 <article class="event-card">
     <img
         class="event-card__image"
-        src="<?= $e($event['image'] ?? ''); ?>"
+        src="<?= $e($placeholderImage); ?>"
+        data-lazy-src="<?= $e($event['image'] ?? ''); ?>"
         alt="<?= $e($event['title'] ?? 'Evento'); ?>"
         loading="lazy"
         decoding="async"
+        fetchpriority="low"
     >
 
     <div class="event-card__body">
