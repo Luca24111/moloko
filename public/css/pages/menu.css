@@ -102,6 +102,23 @@
     line-height: 1.5;
 }
 
+.menu-page__subsections {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.menu-page__subsection {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.menu-page__subsection h4 {
+    color: var(--accent-strong);
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 @media (min-width: 901px) {
     .menu-page {
         gap: 1.2rem;
@@ -140,6 +157,10 @@
 
     .menu-page__empty {
         font-size: 0.95rem;
+    }
+
+    .menu-page__subsection h4 {
+        font-size: 0.86rem;
     }
 }
 

@@ -12,7 +12,7 @@ security:
             id: App\Security\EnvAdminUserProvider
         chain_user_provider:
             chain:
-                providers: ['env_admin_provider', 'app_user_provider']
+                providers: ['app_user_provider', 'env_admin_provider']
 
     firewalls:
         dev:

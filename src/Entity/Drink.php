@@ -34,6 +34,18 @@ class Drink
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageUrl = null;
 
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $beerServingType = null;
+
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $beerServingSize = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2, nullable: true)]
+    private ?string $beerSmallPrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2, nullable: true)]
+    private ?string $beerMediumPrice = null;
+
     #[ORM\ManyToOne(targetEntity: DrinkCategory::class, inversedBy: 'drinks')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?DrinkCategory $drinkCategory = null;
@@ -147,6 +159,60 @@ class Drink
     public function setImageUrl(?string $imageUrl): static
     {
         $this->imageUrl = self::normalizeStoredImagePath($imageUrl);
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getBeerServingType(): ?string
+    {
+        return $this->beerServingType;
+    }
+
+    public function setBeerServingType(?string $beerServingType): static
+    {
+        $beerServingType = $beerServingType !== null ? trim($beerServingType) : null;
+        $this->beerServingType = $beerServingType !== '' ? $beerServingType : null;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getBeerServingSize(): ?string
+    {
+        return $this->beerServingSize;
+    }
+
+    public function setBeerServingSize(?string $beerServingSize): static
+    {
+        $beerServingSize = $beerServingSize !== null ? trim($beerServingSize) : null;
+        $this->beerServingSize = $beerServingSize !== '' ? $beerServingSize : null;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getBeerSmallPrice(): ?string
+    {
+        return $this->beerSmallPrice;
+    }
+
+    public function setBeerSmallPrice(?string $beerSmallPrice): static
+    {
+        $this->beerSmallPrice = $beerSmallPrice;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getBeerMediumPrice(): ?string
+    {
+        return $this->beerMediumPrice;
+    }
+
+    public function setBeerMediumPrice(?string $beerMediumPrice): static
+    {
+        $this->beerMediumPrice = $beerMediumPrice;
         $this->touch();
 
         return $this;

@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -50,6 +51,13 @@ abstract class AbstractDrinkCrudController extends AbstractCrudController
             ->hideOnIndex();
         yield AssociationField::new('drinkCategory', 'Categoria drink')
             ->setRequired(false);
+        yield ChoiceField::new('beerServingType', 'Formato birra')
+            ->setChoices([
+                'Alla spina' => 'draft',
+                'In bottiglietta' => 'bottle',
+            ])
+            ->setRequired(false)
+            ->setHelp('Usalo solo per la categoria Birre: crea le divisioni nel frontend.');
         yield BooleanField::new('isSpecial', 'Speciale');
         yield BooleanField::new('isEnabled', 'Abilitato');
         yield MoneyField::new('price', 'Prezzo')
@@ -57,6 +65,18 @@ abstract class AbstractDrinkCrudController extends AbstractCrudController
             ->setNumDecimals(2)
             ->setStoredAsCents(false)
             ->setRequired(false);
+        yield MoneyField::new('beerSmallPrice', 'Prezzo birra piccola')
+            ->setCurrency('EUR')
+            ->setNumDecimals(2)
+            ->setStoredAsCents(false)
+            ->setRequired(false)
+            ->setHelp('Usalo per le birre alla spina con doppio prezzo.');
+        yield MoneyField::new('beerMediumPrice', 'Prezzo birra media')
+            ->setCurrency('EUR')
+            ->setNumDecimals(2)
+            ->setStoredAsCents(false)
+            ->setRequired(false)
+            ->setHelp('Usalo per le birre alla spina con doppio prezzo.');
         yield ImageField::new('imageUrl', 'Immagine')
             ->setBasePath((string) ManagedMediaStorage::basePathFor(Drink::class))
             ->onlyOnIndex();

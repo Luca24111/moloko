@@ -12,6 +12,8 @@ use Doctrine\ORM\QueryBuilder;
 
 final class FrontendMenuProvider
 {
+    private const IMAGE_CATEGORY_LABELS = ['aperitivo', 'lista drink'];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ManagedMediaStorage $mediaStorage
@@ -22,7 +24,9 @@ final class FrontendMenuProvider
     {
         $categories = $this->entityManager
             ->getRepository(DrinkCategory::class)
-            ->findBy(['isActive' => true], ['displayOrder' => 'ASC', 'name' => 'ASC']);
+            ->findBy([], ['displayOrder' => 'ASC', 'name' => 'ASC']);
+
+        $this->sortDrinkCategoriesForFrontend($categories);
 
         return array_map(fn (DrinkCategory $category): array => $this->mapCategory($category), $categories);
     }
@@ -31,11 +35,11 @@ final class FrontendMenuProvider
     {
         $categories = $this->entityManager
             ->getRepository(DrinkCategory::class)
-            ->findBy(['isActive' => true], ['displayOrder' => 'ASC', 'name' => 'ASC']);
+            ->findBy([], ['displayOrder' => 'ASC', 'name' => 'ASC']);
+
+        $this->sortDrinkCategoriesForFrontend($categories);
 
         $drinks = $this->createEnabledDrinkQueryBuilder()
-            ->andWhere('category.id IS NULL OR category.isActive = :categoryActive')
-            ->setParameter('categoryActive', true)
             ->orderBy('category.displayOrder', 'ASC')
             ->addOrderBy('drink.name', 'ASC')
             ->getQuery()
@@ -201,6 +205,14 @@ final class FrontendMenuProvider
                 $drink->getImageUrl(),
                 'https://images.unsplash.com/photo-1514361892635-6f5b4d1cd4be?auto=format&fit=crop&w=900&q=80'
             ),
+            'beer_serving_type' => $drink->getBeerServingType(),
+            'beer_serving_size' => $drink->getBeerServingSize(),
+            'beer_small_price' => $drink->getBeerSmallPrice() !== null
+                ? number_format((float) $drink->getBeerSmallPrice(), 2, '.', '')
+                : null,
+            'beer_medium_price' => $drink->getBeerMediumPrice() !== null
+                ? number_format((float) $drink->getBeerMediumPrice(), 2, '.', '')
+                : null,
             'is_special' => $drink->isSpecial(),
             'is_enabled' => $drink->isEnabled(),
         ];
@@ -348,6 +360,32 @@ final class FrontendMenuProvider
         }
 
         return array_values($groups);
+    }
+
+    /**
+     * @param list<DrinkCategory> $categories
+     */
+    private function sortDrinkCategoriesForFrontend(array &$categories): void
+    {
+        usort($categories, function (DrinkCategory $first, DrinkCategory $second): int {
+            $firstPriority = $this->getImageCategoryPriority($first);
+            $secondPriority = $this->getImageCategoryPriority($second);
+
+            if ($firstPriority !== $secondPriority) {
+                return $firstPriority <=> $secondPriority;
+            }
+
+            return [$first->getDisplayOrder() ?? 0, $first->getName() ?? '']
+                <=> [$second->getDisplayOrder() ?? 0, $second->getName() ?? ''];
+        });
+    }
+
+    private function getImageCategoryPriority(DrinkCategory $category): int
+    {
+        $label = strtolower(trim((string) $category->getName()));
+        $priority = array_search($label, self::IMAGE_CATEGORY_LABELS, true);
+
+        return $priority === false ? \PHP_INT_MAX : $priority;
     }
 
     /**

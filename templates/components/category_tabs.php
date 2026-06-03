@@ -6,36 +6,40 @@ $interactive = $interactive ?? false;
 $includeAll = $includeAll ?? false;
 $ariaLabel = $ariaLabel ?? 'Categorie';
 $className = $variant === 'stacked' ? 'category-tabs category-tabs--stacked' : 'category-tabs';
+
+$items = [];
+
+if ($interactive && $includeAll) {
+    $items[] = [
+        'slug' => 'all',
+        'label' => 'Tutte',
+        'active' => $activeCategory === 'all',
+    ];
+}
+
+foreach ($categories as $category) {
+    $slug = $category['slug'] ?? '';
+    $items[] = [
+        'slug' => $slug,
+        'label' => $category['label'] ?? 'Categoria',
+        'active' => $activeCategory === $slug,
+    ];
+}
 ?>
 <div class="<?= $e($className); ?>" aria-label="<?= $e($ariaLabel); ?>">
-    <?php if ($interactive && $includeAll): ?>
-        <?php $allActive = $activeCategory === 'all'; ?>
-        <button
-            type="button"
-            class="category-tabs__chip<?= $allActive ? ' is-active' : ''; ?>"
-            data-category-filter="all"
-            aria-pressed="<?= $allActive ? 'true' : 'false'; ?>"
-        >
-            Tutte
-        </button>
-    <?php endif; ?>
-
-    <?php foreach ($categories as $category): ?>
-        <?php $slug = $category['slug'] ?? ''; ?>
-        <?php $isActive = $activeCategory === $slug; ?>
-
+    <?php foreach ($items as $item): ?>
         <?php if ($interactive): ?>
             <button
                 type="button"
-                class="category-tabs__chip<?= $isActive ? ' is-active' : ''; ?>"
-                data-category-filter="<?= $e($slug); ?>"
-                aria-pressed="<?= $isActive ? 'true' : 'false'; ?>"
+                class="category-tabs__chip<?= $item['active'] ? ' is-active' : ''; ?>"
+                data-category-filter="<?= $e($item['slug']); ?>"
+                aria-pressed="<?= $item['active'] ? 'true' : 'false'; ?>"
             >
-                <?= $e($category['label'] ?? 'Categoria'); ?>
+                <?= $e($item['label']); ?>
             </button>
         <?php else: ?>
-            <span class="category-tabs__chip<?= $isActive ? ' is-active' : ''; ?>">
-                <?= $e($category['label'] ?? 'Categoria'); ?>
+            <span class="category-tabs__chip<?= $item['active'] ? ' is-active' : ''; ?>">
+                <?= $e($item['label']); ?>
             </span>
         <?php endif; ?>
     <?php endforeach; ?>

@@ -4,6 +4,10 @@
     gap: 0.85rem;
 }
 
+.drink-grid--list {
+    gap: 0.45rem;
+}
+
 .drink-card {
     background: linear-gradient(165deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 245, 236, 0.96) 100%);
     border-radius: var(--radius-md);
@@ -50,6 +54,71 @@
     font-size: 0.94rem;
 }
 
+.drink-card__prices {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.32rem;
+}
+
+.drink-card__price-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    border-radius: 999px;
+    background: rgba(242, 122, 26, 0.1);
+    color: var(--accent-strong);
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 0.24rem 0.48rem;
+    white-space: nowrap;
+}
+
+.drink-card__price-option strong {
+    font-size: 0.86rem;
+}
+
+.drink-card--list {
+    min-height: 0;
+    padding: 0.72rem 0.8rem;
+    background: rgba(255, 255, 255, 0.74);
+}
+
+.drink-card--list .drink-card__body {
+    margin-top: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 0.9rem;
+    row-gap: 0.28rem;
+}
+
+.drink-card--list .drink-card__head {
+    min-width: 0;
+}
+
+.drink-card--list .drink-card__head h3 {
+    overflow-wrap: anywhere;
+}
+
+.drink-card--list .drink-card__description {
+    grid-column: 1 / -1;
+    font-size: 0.86rem;
+    line-height: 1.42;
+}
+
+.drink-card--list .drink-card__price {
+    grid-column: 2;
+    grid-row: 1;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.drink-card--list .drink-card__prices {
+    grid-column: 2;
+    grid-row: 1;
+}
+
 .drink-card__meta {
     margin-top: auto;
     display: flex;
@@ -76,6 +145,10 @@
     .drink-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .drink-grid--list {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (min-width: 901px) {
@@ -84,8 +157,17 @@
         gap: 0.9rem;
     }
 
+    .drink-grid--list {
+        grid-template-columns: 1fr;
+        gap: 0.45rem;
+    }
+
     .drink-card {
         padding: 0.75rem;
+    }
+
+    .drink-card--list {
+        padding: 0.72rem 0.85rem;
     }
 
     .drink-card__head h3 {
@@ -104,5 +186,9 @@
 @media (min-width: 1101px) {
     .drink-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .drink-grid--list {
+        grid-template-columns: 1fr;
     }
 }
