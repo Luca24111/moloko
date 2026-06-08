@@ -31,8 +31,9 @@ $groupedFoods = $groupedFoods ?? [];
             <?php endif; ?>
 
             <?php foreach ($groupedFoods as $section): ?>
+                <?php $foods = $section['foods'] ?? []; ?>
                 <section
-                    class="food-page__section"
+                    class="food-page__section food-page__section--list"
                     id="<?= $e($section['category']['slug'] ?? 'section'); ?>"
                     data-category-section="<?= $e($section['category']['slug'] ?? ''); ?>"
                 >
@@ -44,7 +45,11 @@ $groupedFoods = $groupedFoods ?? [];
                     <?php if (empty($section['foods'])): ?>
                         <p class="food-page__empty">Questa proposta tornera presto in carta.</p>
                     <?php else: ?>
-                        <?php $include('components/drink_grid.php', ['drinks' => $section['foods'] ?? []]); ?>
+                        <?php $include('components/drink_grid.php', [
+                            'drinks' => $foods,
+                            'showImages' => false,
+                            'layout' => 'list',
+                        ]); ?>
                     <?php endif; ?>
                 </section>
             <?php endforeach; ?>

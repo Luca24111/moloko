@@ -194,6 +194,7 @@ final class FrontendMenuProvider
     {
         $category = $drink->getDrinkCategory();
         $categoryName = $category?->getName() ?? 'Senza categoria';
+        $imagePath = $drink->getImageUrl();
 
         return [
             'name' => $drink->getName() ?? 'Drink',
@@ -202,9 +203,10 @@ final class FrontendMenuProvider
             'category_slug' => $category !== null ? 'cat-'.($category->getId() ?? 0) : 'uncategorized',
             'image' => $this->mediaStorage->resolvePublicUrl(
                 Drink::class,
-                $drink->getImageUrl(),
+                $imagePath,
                 'https://images.unsplash.com/photo-1514361892635-6f5b4d1cd4be?auto=format&fit=crop&w=900&q=80'
             ),
+            'has_image' => $this->hasDisplayImage($imagePath),
             'beer_serving_type' => $drink->getBeerServingType(),
             'beer_serving_size' => $drink->getBeerServingSize(),
             'beer_small_price' => $drink->getBeerSmallPrice() !== null
@@ -222,6 +224,7 @@ final class FrontendMenuProvider
     {
         $category = $food->getFoodCategory();
         $categoryLabel = $category?->getName() ?? 'Senza categoria';
+        $imagePath = $food->getImageUrl();
 
         return [
             'name' => $food->getName() ?? 'Piatto',
@@ -230,9 +233,10 @@ final class FrontendMenuProvider
             'category_slug' => $category !== null ? 'food-cat-'.($category->getId() ?? 0) : 'food-uncategorized',
             'image' => $this->mediaStorage->resolvePublicUrl(
                 Food::class,
-                $food->getImageUrl(),
+                $imagePath,
                 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80'
             ),
+            'has_image' => $this->hasDisplayImage($imagePath),
             'is_special' => $food->isSpecial(),
             'is_enabled' => $food->isEnabled(),
         ];
@@ -386,6 +390,11 @@ final class FrontendMenuProvider
         $priority = array_search($label, self::IMAGE_CATEGORY_LABELS, true);
 
         return $priority === false ? \PHP_INT_MAX : $priority;
+    }
+
+    private function hasDisplayImage(?string $imagePath): bool
+    {
+        return trim((string) $imagePath) !== '';
     }
 
     /**

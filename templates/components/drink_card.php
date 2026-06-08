@@ -3,6 +3,7 @@ $drink = $drink ?? [];
 $compact = $compact ?? false;
 $showImage = $showImage ?? true;
 $list = $list ?? false;
+$list = $list || !$showImage;
 $classNames = ['drink-card'];
 
 if ($compact) {
