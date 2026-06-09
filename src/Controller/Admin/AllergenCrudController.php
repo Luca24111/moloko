@@ -31,7 +31,8 @@ final class AllergenCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
-        yield TextField::new('name', 'Nome');
+        yield TextField::new('name', 'Nome')
+            ->setHelp('Icone frontend disponibili per: glutine, soia, latticini, arachidi, crostacei/molluschi.');
         yield TextareaField::new('description', 'Descrizione')
             ->setRequired(false)
             ->hideOnIndex();

@@ -21,6 +21,7 @@ if ($list) {
 $className = implode(' ', $classNames);
 $placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 $beerPrices = [];
+$allergens = $drink['allergens'] ?? [];
 
 if (($drink['beer_small_price'] ?? null) !== null) {
     $beerPrices[] = ['label' => 'Piccola', 'price' => $drink['beer_small_price']];
@@ -49,6 +50,26 @@ if (($drink['beer_medium_price'] ?? null) !== null) {
         </div>
         <?php if (($drink['description'] ?? '') !== ''): ?>
             <p class="drink-card__description"><?= $e($drink['description']); ?></p>
+        <?php endif; ?>
+        <?php if (!empty($allergens)): ?>
+            <div class="drink-card__allergens" aria-label="Allergeni">
+                <?php foreach ($allergens as $allergen): ?>
+                    <span class="drink-card__allergen" title="<?= $e($allergen['label'] ?? 'Allergene'); ?>">
+                        <?php if (($allergen['icon'] ?? null) !== null): ?>
+                            <img
+                                class="drink-card__allergen-icon"
+                                src="<?= $e($allergen['icon']); ?>"
+                                alt=""
+                                width="16"
+                                height="16"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                        <?php endif; ?>
+                        <span><?= $e($allergen['label'] ?? 'Allergene'); ?></span>
+                    </span>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
         <?php if (!empty($beerPrices)): ?>
             <div class="drink-card__prices">

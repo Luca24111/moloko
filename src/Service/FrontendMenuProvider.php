@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Allergen;
 use App\Entity\Drink;
 use App\Entity\DrinkCategory;
 use App\Entity\Event;
@@ -138,7 +139,9 @@ final class FrontendMenuProvider
             ->getRepository(Food::class)
             ->createQueryBuilder('food')
             ->leftJoin('food.foodCategory', 'category')
+            ->leftJoin('food.allergens', 'allergen')
             ->addSelect('category')
+            ->addSelect('allergen')
             ->andWhere('food.isEnabled = :isEnabled')
             ->andWhere('category.id IS NULL OR category.isActive = :categoryActive')
             ->setParameter('isEnabled', true)
@@ -230,6 +233,7 @@ final class FrontendMenuProvider
         return [
             'name' => $food->getName() ?? 'Piatto',
             'description' => $food->getDescription() ?? '',
+            'allergens' => $this->mapAllergens($food),
             'price' => number_format((float) ($food->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryLabel),
             'category_slug' => $category !== null ? 'food-cat-'.($category->getId() ?? 0) : 'food-uncategorized',
@@ -331,7 +335,9 @@ final class FrontendMenuProvider
             ->getRepository(Food::class)
             ->createQueryBuilder('food')
             ->leftJoin('food.foodCategory', 'category')
+            ->leftJoin('food.allergens', 'allergen')
             ->addSelect('category')
+            ->addSelect('allergen')
             ->andWhere('food.isEnabled = :isEnabled')
             ->setParameter('isEnabled', true);
     }
@@ -397,6 +403,59 @@ final class FrontendMenuProvider
     private function hasDisplayImage(?string $imagePath): bool
     {
         return trim((string) $imagePath) !== '';
+    }
+
+    /**
+     * @return list<array{label: string, icon: ?string}>
+     */
+    private function mapAllergens(Food $food): array
+    {
+        $mapped = [];
+
+        foreach ($food->getAllergens() as $allergen) {
+            $mapped[] = $this->mapAllergen($allergen);
+        }
+
+        usort(
+            $mapped,
+            static fn (array $first, array $second): int => $first['label'] <=> $second['label']
+        );
+
+        return $mapped;
+    }
+
+    /**
+     * @return array{label: string, icon: ?string}
+     */
+    private function mapAllergen(Allergen $allergen): array
+    {
+        $label = $allergen->getName() ?? 'Allergene';
+        $iconName = $this->resolveAllergenIconName($label);
+
+        return [
+            'label' => $label,
+            'icon' => $iconName !== null ? '/images/allergens/'.$iconName.'.png' : null,
+        ];
+    }
+
+    private function resolveAllergenIconName(string $label): ?string
+    {
+        return match ($this->normalizeAllergenKey($label)) {
+            'glutine', 'gluten' => 'glutine',
+            'soia', 'soy', 'soya' => 'soia',
+            'latticini', 'latte', 'dairy', 'formaggio' => 'latticini',
+            'arachidi', 'arachide', 'peanut', 'peanuts' => 'arachidi',
+            'crostacei', 'molluschi', 'molloschi', 'crostacei-molluschi', 'crostacei-e-molluschi', 'shellfish' => 'crostacei-molluschi',
+            default => null,
+        };
+    }
+
+    private function normalizeAllergenKey(string $label): string
+    {
+        $asciiLabel = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $label);
+        $normalizedLabel = strtolower(trim($asciiLabel !== false ? $asciiLabel : $label));
+
+        return trim((string) preg_replace('/[^a-z0-9]+/', '-', $normalizedLabel), '-');
     }
 
     /**

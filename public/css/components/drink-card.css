@@ -53,6 +53,34 @@
     line-height: 1.5;
 }
 
+.drink-card__allergens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.drink-card__allergen {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    background: rgba(201, 94, 7, 0.1);
+    color: #c95e07;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 0.28rem 0.5rem;
+    white-space: nowrap;
+}
+
+.drink-card__allergen-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    display: block;
+    object-fit: contain;
+    flex: 0 0 0.95rem;
+}
+
 .drink-card__price {
     color: var(--accent-strong);
     font-weight: 800;
@@ -114,6 +142,10 @@
     grid-column: 1 / -1;
     font-size: 0.86rem;
     line-height: 1.42;
+}
+
+.drink-card--list .drink-card__allergens {
+    grid-column: 1 / -1;
 }
 
 .drink-card--list .drink-card__price {
