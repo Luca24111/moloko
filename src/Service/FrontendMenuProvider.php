@@ -198,6 +198,7 @@ final class FrontendMenuProvider
 
         return [
             'name' => $drink->getName() ?? 'Drink',
+            'description' => $drink->getDescription() ?? '',
             'price' => number_format((float) ($drink->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryName),
             'category_slug' => $category !== null ? 'cat-'.($category->getId() ?? 0) : 'uncategorized',
@@ -228,6 +229,7 @@ final class FrontendMenuProvider
 
         return [
             'name' => $food->getName() ?? 'Piatto',
+            'description' => $food->getDescription() ?? '',
             'price' => number_format((float) ($food->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryLabel),
             'category_slug' => $category !== null ? 'food-cat-'.($category->getId() ?? 0) : 'food-uncategorized',

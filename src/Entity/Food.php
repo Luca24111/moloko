@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,6 +37,11 @@ class Food
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?FoodCategory $foodCategory = null;
 
+    /** @var Collection<int, Allergen> */
+    #[ORM\ManyToMany(targetEntity: Allergen::class, inversedBy: 'foods')]
+    #[ORM\JoinTable(name: 'food_allergen')]
+    private Collection $allergens;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
@@ -46,6 +53,7 @@ class Food
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
         $this->updatedAt = $now;
+        $this->allergens = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -152,6 +160,33 @@ class Food
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return Collection<int, Allergen>
+     */
+    public function getAllergens(): Collection
+    {
+        return $this->allergens;
+    }
+
+    public function addAllergen(Allergen $allergen): static
+    {
+        if (!$this->allergens->contains($allergen)) {
+            $this->allergens->add($allergen);
+            $allergen->addFood($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAllergen(Allergen $allergen): static
+    {
+        if ($this->allergens->removeElement($allergen)) {
+            $allergen->removeFood($this);
+        }
+
+        return $this;
     }
 
     public function getUpdatedAt(): \DateTimeImmutable

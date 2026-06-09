@@ -44,6 +44,11 @@ final class FoodCrudController extends AbstractCrudController
             ->hideOnIndex();
         yield AssociationField::new('foodCategory', 'Categoria cibo')
             ->setRequired(false);
+        yield AssociationField::new('allergens', 'Allergeni')
+            ->setRequired(false)
+            ->setFormTypeOption('by_reference', false)
+            ->autocomplete()
+            ->hideOnIndex();
         yield MoneyField::new('price', 'Prezzo')
             ->setCurrency('EUR')
             ->setStoredAsCents(false)

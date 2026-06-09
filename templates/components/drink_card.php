@@ -47,8 +47,9 @@ if (($drink['beer_medium_price'] ?? null) !== null) {
         <div class="drink-card__head">
             <h3><?= $e($drink['name'] ?? 'Drink'); ?></h3>
         </div>
-
-        <p class="drink-card__description"><?= $e($drink['description'] ?? ''); ?></p>
+        <?php if (($drink['description'] ?? '') !== ''): ?>
+            <p class="drink-card__description"><?= $e($drink['description']); ?></p>
+        <?php endif; ?>
         <?php if (!empty($beerPrices)): ?>
             <div class="drink-card__prices">
                 <?php foreach ($beerPrices as $beerPrice): ?>
