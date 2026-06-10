@@ -12,6 +12,19 @@ $placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABA
 
     <?php $include('components/feature_banner.php', ['items' => $stats]); ?>
 
+    <section class="home-page__events">
+        <div class="home-page__heading">
+            <p class="home-page__kicker">Eventi</p>
+            <h2>Le prossime serate al Moloch</h2>
+        </div>
+
+        <?php if (empty($events)): ?>
+            <p class="home-page__empty">Nessun evento pubblicato al momento.</p>
+        <?php else: ?>
+            <?php $include('components/event_grid.php', ['events' => $events]); ?>
+        <?php endif; ?>
+    </section>
+
     <section class="home-page__quicklinks">
         <div class="home-page__heading">
             <p class="home-page__kicker">Menu</p>

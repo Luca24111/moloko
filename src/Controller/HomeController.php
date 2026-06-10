@@ -10,6 +10,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractPageController
 {
+    private const DEFAULT_EVENT_IMAGE = '/uploads/media/events/gemini-generated-image-hh5zqmhh5zqmhh5z-b3edea54b518bb68a485469c046f62c93eebf9b2.png';
+
     public function __construct(
         TemplateRenderer $renderer,
         private readonly FrontendMenuProvider $menuProvider,
@@ -44,6 +46,21 @@ final class HomeController extends AbstractPageController
                 'primaryCta' => null,
                 'secondaryCta' => null,
                 'slides' => $heroSlides,
+                'visualOnly' => true,
+            ];
+        } else {
+            $heroContent = [
+                'title' => '',
+                'text' => '',
+                'primaryCta' => null,
+                'secondaryCta' => null,
+                'slides' => [[
+                    'url' => self::DEFAULT_EVENT_IMAGE,
+                    'alt' => 'Evento del locale',
+                    'title' => '',
+                    'time' => '',
+                    'meta' => '',
+                ]],
                 'visualOnly' => true,
             ];
         }
