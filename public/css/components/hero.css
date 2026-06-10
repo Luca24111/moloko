@@ -49,9 +49,10 @@
 
 .hero__slide img {
     width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+    height: auto;
+    display: block;
     border-radius: 18px;
+    background: #fff3e8;
 }
 
 .hero--visual-only {
@@ -60,8 +61,7 @@
 }
 
 .hero--visual-only .hero__slide img {
-    aspect-ratio: 16 / 12;
-    min-height: 340px;
+    max-height: min(72vh, 760px);
 }
 
 .hero--visual-only .hero__caption {
@@ -241,8 +241,7 @@
     }
 
     .hero--visual-only .hero__slide img {
-        aspect-ratio: 16 / 6;
-        min-height: 460px;
+        max-height: min(78vh, 860px);
     }
 
     .hero--visual-only .hero__caption {

@@ -6,11 +6,11 @@ $quickLinks = $quickLinks ?? [];
 $placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 ?>
 <section class="home-page">
-    <?php $include('components/hero.php', $hero); ?>
+    <?php if (!empty($hero)): ?>
+        <?php $include('components/hero.php', $hero); ?>
+    <?php endif; ?>
 
     <?php $include('components/feature_banner.php', ['items' => $stats]); ?>
-
-
 
     <section class="home-page__quicklinks">
         <div class="home-page__heading">

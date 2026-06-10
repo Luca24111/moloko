@@ -9,13 +9,15 @@
     border-radius: var(--radius-md);
     border: 1px solid var(--line);
     overflow: hidden;
+    display: grid;
+    align-content: start;
     min-height: 100%;
 }
 
 .event-card__image {
     width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+    height: auto;
+    display: block;
 }
 
 .event-card__body {

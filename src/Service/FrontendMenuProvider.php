@@ -79,9 +79,17 @@ final class FrontendMenuProvider
     public function getPublishedEvents(int $limit = 0): array
     {
         $queryBuilder = $this->createPublishedEventQueryBuilder()
-            ->andWhere('COALESCE(event.endsAt, event.startsAt) >= :today')
+            ->addSelect(
+                "CASE
+                    WHEN event.startsAt IS NULL THEN 1
+                    WHEN COALESCE(event.endsAt, event.startsAt) >= :today THEN 0
+                    ELSE 2
+                END AS HIDDEN eventSortBucket"
+            )
             ->setParameter('today', new \DateTimeImmutable('today'))
-            ->orderBy('event.startsAt', 'ASC')
+            ->orderBy('eventSortBucket', 'ASC')
+            ->addOrderBy('event.startsAt', 'ASC')
+            ->addOrderBy('event.updatedAt', 'DESC')
             ->addOrderBy('event.id', 'DESC');
 
         if ($limit > 0) {
@@ -89,34 +97,12 @@ final class FrontendMenuProvider
         }
 
         $events = $queryBuilder->getQuery()->getResult();
-        if ($events === []) {
-            $fallbackQueryBuilder = $this->createPublishedEventQueryBuilder()
-                ->orderBy('event.updatedAt', 'DESC')
-                ->addOrderBy('event.id', 'DESC');
-
-            if ($limit > 0) {
-                $fallbackQueryBuilder->setMaxResults($limit);
-            }
-
-            $events = $fallbackQueryBuilder->getQuery()->getResult();
-        }
 
         return array_map(fn (Event $event): array => $this->mapEvent($event), $events);
     }
 
     public function countPublishedEvents(): int
     {
-        $upcomingCount = (int) $this->createPublishedEventQueryBuilder()
-            ->select('COUNT(event.id)')
-            ->andWhere('COALESCE(event.endsAt, event.startsAt) >= :today')
-            ->setParameter('today', new \DateTimeImmutable('today'))
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        if ($upcomingCount > 0) {
-            return $upcomingCount;
-        }
-
         return (int) $this->createPublishedEventQueryBuilder()
             ->select('COUNT(event.id)')
             ->getQuery()
@@ -261,22 +247,25 @@ final class FrontendMenuProvider
 
     private function mapEvent(Event $event): array
     {
-        $startsAt = $event->getStartsAt() ?? new \DateTimeImmutable();
+        $startsAt = $event->getStartsAt();
         $endsAt = $event->getEndsAt();
         $ticketPrice = $event->getTicketPrice();
+        $title = trim((string) ($event->getTitle() ?? ''));
+        $description = trim((string) ($event->getDescription() ?? ''));
+        $location = trim((string) ($event->getLocation() ?? ''));
 
         return [
-            'title' => $event->getTitle() ?? 'Evento',
-            'description' => $event->getDescription() ?? 'Musica, drink e atmosfera in riva al Po.',
-            'location' => $event->getLocation() ?? 'Moloch, Borgoforte',
+            'title' => $title,
+            'description' => $description !== '' ? $description : 'Musica, drink e atmosfera in riva al Po.',
+            'location' => $location !== '' ? $location : 'Moloch, Borgoforte',
             'image' => $this->mediaStorage->resolvePublicUrl(
                 Event::class,
                 $event->getCoverImageUrl(),
                 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80'
             ),
-            'starts_at_label' => $this->formatShortEventDate($startsAt),
-            'time_label' => $this->formatEventTimeRange($startsAt, $endsAt),
-            'date_range_label' => $this->formatEventDateRange($startsAt, $endsAt),
+            'starts_at_label' => $startsAt !== null ? $this->formatShortEventDate($startsAt) : '',
+            'time_label' => $startsAt !== null ? $this->formatEventTimeRange($startsAt, $endsAt) : '',
+            'date_range_label' => $startsAt !== null ? $this->formatEventDateRange($startsAt, $endsAt) : '',
             'ticket_label' => $ticketPrice !== null ? '€ '.number_format((float) $ticketPrice, 2, '.', '') : 'Ingresso libero',
             'is_free_entry' => $ticketPrice === null,
         ];

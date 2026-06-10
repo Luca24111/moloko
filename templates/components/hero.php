@@ -30,18 +30,17 @@ $placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABA
                     >
                     <?php $slideTitle = trim((string) ($slide['title'] ?? '')); ?>
                     <?php $slideTime = trim((string) ($slide['time'] ?? '')); ?>
-                    <?php $slideMeta = trim((string) ($slide['meta'] ?? ('€ '.($slide['price'] ?? '0.00')))); ?>
-                    <?php if ($slideTitle !== '' || $slideTime !== '' || $slideMeta !== ''): ?>
+                    <?php $slideMeta = trim((string) ($slide['meta'] ?? '')); ?>
+                    <?php $captionMeta = $slideMeta !== '' ? $slideMeta : $slideTime; ?>
+                    <?php if ($slideTitle !== '' || $captionMeta !== ''): ?>
                         <figcaption class="hero__caption">
-                            <?php if ($slideTitle !== '' || $slideTime !== ''): ?>
+                            <?php if ($slideTitle !== ''): ?>
                                 <div class="hero__event-copy">
-                                    <?php if ($slideTitle !== ''): ?>
-                                        <strong class="hero__event-title"><?= $e($slideTitle); ?></strong>
-                                    <?php endif; ?>
+                                    <strong class="hero__event-title"><?= $e($slideTitle); ?></strong>
                                 </div>
                             <?php endif; ?>
-                            <?php if ($slideMeta !== ''): ?>
-                                <span class="hero__event-date"><?= $e($slideMeta); ?></span>
+                            <?php if ($captionMeta !== ''): ?>
+                                <span class="hero__event-date"><?= $e($captionMeta); ?></span>
                             <?php endif; ?>
                         </figcaption>
                     <?php endif; ?>

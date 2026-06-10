@@ -24,21 +24,28 @@ final class HomeController extends AbstractPageController
         $events = $this->menuProvider->getPublishedEvents(4);
         $featuredDrink = $this->menuProvider->getSpecialDrinks(1)[0] ?? null;
         $featuredFood = $this->menuProvider->getFoods()[0] ?? null;
-        $heroSlides = array_map(static fn (array $event): array => [
-            'url' => $event['image'] ?? '',
-            'alt' => $event['title'] ?? 'Evento',
-            'title' => $event['title'] ?? 'Evento',
-            'time' => $event['time_label'] ?? '',
-            'meta' => $event['date_range_label'] ?? '',
-        ], array_slice($events, 0, 3));
+        $heroSlides = array_map(static function (array $event): array {
+            $title = trim((string) ($event['title'] ?? ''));
 
-        if (empty($heroSlides)) {
-            $heroSlides = [[
-                'url' => 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80',
-                'alt' => 'Evento del locale',
+            return [
+                'url' => $event['image'] ?? '',
+                'alt' => $title !== '' ? $title : 'Evento in evidenza',
+                'title' => $title,
+                'time' => trim((string) ($event['time_label'] ?? '')),
+                'meta' => trim((string) ($event['date_range_label'] ?? '')),
+            ];
+        }, array_slice($events, 0, 3));
+
+        $heroContent = [];
+        if (!empty($heroSlides)) {
+            $heroContent = [
                 'title' => '',
-                'meta' => '',
-            ]];
+                'text' => '',
+                'primaryCta' => null,
+                'secondaryCta' => null,
+                'slides' => $heroSlides,
+                'visualOnly' => true,
+            ];
         }
 
         return $this->renderPage('pages/home.php', [
@@ -55,14 +62,7 @@ final class HomeController extends AbstractPageController
                 'js/specials-carousel.js',
             ],
             'content' => [
-                'hero' => [
-                    'title' => '',
-                    'text' => '',
-                    'primaryCta' => null,
-                    'secondaryCta' => null,
-                    'slides' => $heroSlides,
-                    'visualOnly' => true,
-                ],
+                'hero' => $heroContent,
                 'stats' => [
                     ['label' => 'Drink in carta', 'value' => (string) $this->menuProvider->countDrinks()],
                     ['label' => 'Sapore fresco', 'value' => '100%'],
