@@ -21,11 +21,8 @@ class Food
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2, nullable: true)]
-    private ?string $price = null;
-
-    #[ORM\Column(options: ['default' => false])]
-    private bool $isSpecial = false;
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private ?int $displayOrder = 0;
 
     #[ORM\Column(options: ['default' => true])]
     private bool $isEnabled = true;
@@ -37,10 +34,14 @@ class Food
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?FoodCategory $foodCategory = null;
 
-    /** @var Collection<int, Allergen> */
-    #[ORM\ManyToMany(targetEntity: Allergen::class, inversedBy: 'foods')]
-    #[ORM\JoinTable(name: 'food_allergen')]
-    private Collection $allergens;
+    /** @var Collection<int, FoodCategory> */
+    #[ORM\ManyToMany(targetEntity: FoodCategory::class, inversedBy: 'ingredientCategories')]
+    #[ORM\JoinTable(name: 'ingredient_category_food_category')]
+    private Collection $foodCategories;
+
+    /** @var Collection<int, Ingredienti> */
+    #[ORM\OneToMany(mappedBy: 'ingredientCategory', targetEntity: Ingredienti::class)]
+    private Collection $ingredienti;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
@@ -53,12 +54,13 @@ class Food
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
         $this->updatedAt = $now;
-        $this->allergens = new ArrayCollection();
+        $this->foodCategories = new ArrayCollection();
+        $this->ingredienti = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return $this->name ?? 'Piatto';
+        return $this->name ?? 'Categoria ingredienti';
     }
 
     public function getId(): ?int
@@ -92,27 +94,14 @@ class Food
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getDisplayOrder(): ?int
     {
-        return $this->price;
+        return $this->displayOrder;
     }
 
-    public function setPrice(?string $price): static
+    public function setDisplayOrder(?int $displayOrder): static
     {
-        $this->price = $price;
-        $this->touch();
-
-        return $this;
-    }
-
-    public function isSpecial(): bool
-    {
-        return $this->isSpecial;
-    }
-
-    public function setIsSpecial(bool $isSpecial): static
-    {
-        $this->isSpecial = $isSpecial;
+        $this->displayOrder = $displayOrder;
         $this->touch();
 
         return $this;
@@ -157,33 +146,64 @@ class Food
         return $this;
     }
 
+    /**
+     * @return Collection<int, FoodCategory>
+     */
+    public function getFoodCategories(): Collection
+    {
+        return $this->foodCategories;
+    }
+
+    public function addFoodCategory(FoodCategory $foodCategory): static
+    {
+        if (!$this->foodCategories->contains($foodCategory)) {
+            $this->foodCategories->add($foodCategory);
+            $foodCategory->addIngredientCategory($this);
+            $this->touch();
+        }
+
+        return $this;
+    }
+
+    public function removeFoodCategory(FoodCategory $foodCategory): static
+    {
+        if ($this->foodCategories->removeElement($foodCategory)) {
+            $foodCategory->removeIngredientCategory($this);
+            $this->touch();
+        }
+
+        return $this;
+    }
+
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
     /**
-     * @return Collection<int, Allergen>
+     * @return Collection<int, Ingredienti>
      */
-    public function getAllergens(): Collection
+    public function getIngredienti(): Collection
     {
-        return $this->allergens;
+        return $this->ingredienti;
     }
 
-    public function addAllergen(Allergen $allergen): static
+    public function addIngrediente(Ingredienti $ingrediente): static
     {
-        if (!$this->allergens->contains($allergen)) {
-            $this->allergens->add($allergen);
-            $allergen->addFood($this);
+        if (!$this->ingredienti->contains($ingrediente)) {
+            $this->ingredienti->add($ingrediente);
+            $ingrediente->setIngredientCategory($this);
         }
 
         return $this;
     }
 
-    public function removeAllergen(Allergen $allergen): static
+    public function removeIngrediente(Ingredienti $ingrediente): static
     {
-        if ($this->allergens->removeElement($allergen)) {
-            $allergen->removeFood($this);
+        if ($this->ingredienti->removeElement($ingrediente)) {
+            if ($ingrediente->getIngredientCategory() === $this) {
+                $ingrediente->setIngredientCategory(null);
+            }
         }
 
         return $this;

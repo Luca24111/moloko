@@ -85,14 +85,16 @@
 .menu-page__section-head {
     display: grid;
     gap: 0.25rem;
+    color: var(--accent-strong);
 }
 
 .menu-page__section-head h3 {
     font-size: 1.12rem;
+    color: inherit;
 }
 
 .menu-page__section-head p {
-    color: var(--text-muted);
+    color: inherit;
     font-size: 0.92rem;
 }
 

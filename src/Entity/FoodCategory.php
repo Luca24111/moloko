@@ -31,6 +31,10 @@ class FoodCategory
     #[ORM\OneToMany(mappedBy: 'foodCategory', targetEntity: Food::class)]
     private Collection $foods;
 
+    /** @var Collection<int, Food> */
+    #[ORM\ManyToMany(targetEntity: Food::class, mappedBy: 'foodCategories')]
+    private Collection $ingredientCategories;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
@@ -43,6 +47,7 @@ class FoodCategory
         $this->createdAt = $now;
         $this->updatedAt = $now;
         $this->foods = new ArrayCollection();
+        $this->ingredientCategories = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -131,6 +136,33 @@ class FoodCategory
             if ($food->getFoodCategory() === $this) {
                 $food->setFoodCategory(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Food>
+     */
+    public function getIngredientCategories(): Collection
+    {
+        return $this->ingredientCategories;
+    }
+
+    public function addIngredientCategory(Food $ingredientCategory): static
+    {
+        if (!$this->ingredientCategories->contains($ingredientCategory)) {
+            $this->ingredientCategories->add($ingredientCategory);
+            $ingredientCategory->addFoodCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIngredientCategory(Food $ingredientCategory): static
+    {
+        if ($this->ingredientCategories->removeElement($ingredientCategory)) {
+            $ingredientCategory->removeFoodCategory($this);
         }
 
         return $this;

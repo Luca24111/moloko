@@ -75,16 +75,44 @@
 .food-page__section-head {
     display: grid;
     gap: 0.25rem;
+    color: var(--accent-strong);
 }
 
 .food-page__section-head h2,
 .food-page__section-head h3 {
     font-size: 1.12rem;
+    color: inherit;
 }
 
 .food-page__section-head p {
-    color: var(--text-muted);
+    color: inherit;
     font-size: 0.92rem;
+}
+
+.food-page__ingredient-category {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: 0.1rem;
+}
+
+.food-page__ingredient-category + .food-page__ingredient-category {
+    border-top: 1px solid var(--line);
+    padding-top: 0.75rem;
+}
+
+.food-page__ingredient-category-head {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.food-page__ingredient-category-head h4 {
+    font-size: 1rem;
+}
+
+.food-page__ingredient-category-head p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
 }
 
 .food-page__empty {
@@ -132,6 +160,14 @@
 
     .food-page__section-head p {
         font-size: 1rem;
+    }
+
+    .food-page__ingredient-category-head h4 {
+        font-size: 1.08rem;
+    }
+
+    .food-page__ingredient-category-head p {
+        font-size: 0.94rem;
     }
 
     .food-page__empty {

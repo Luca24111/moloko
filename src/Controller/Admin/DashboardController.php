@@ -8,6 +8,7 @@ use App\Entity\DrinkCategory;
 use App\Entity\Event;
 use App\Entity\Food;
 use App\Entity\FoodCategory;
+use App\Entity\Ingredienti;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -56,10 +57,12 @@ final class DashboardController extends AbstractDashboardController
             ->setController(NonAlcoholicDrinkCrudController::class);
         yield MenuItem::linkToCrud('Categorie cibo', 'fa fa-layer-group', FoodCategory::class)
             ->setController(FoodCategoryCrudController::class);
+        yield MenuItem::linkToCrud('Categorie ingredienti', 'fa fa-list', Food::class)
+            ->setController(FoodCrudController::class);
+        yield MenuItem::linkToCrud('Ingredienti', 'fa fa-cheese', Ingredienti::class)
+            ->setController(IngredientiCrudController::class);
         yield MenuItem::linkToCrud('Allergeni', 'fa fa-triangle-exclamation', Allergen::class)
             ->setController(AllergenCrudController::class);
-        yield MenuItem::linkToCrud('Piatti', 'fa fa-burger', Food::class)
-            ->setController(FoodCrudController::class);
         yield MenuItem::linkToCrud('Eventi', 'fa fa-calendar-day', Event::class);
 
         yield MenuItem::section('Navigazione');

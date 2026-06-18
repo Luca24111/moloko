@@ -8,6 +8,7 @@ use App\Entity\DrinkCategory;
 use App\Entity\Event;
 use App\Entity\Food;
 use App\Entity\FoodCategory;
+use App\Entity\Ingredienti;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
@@ -111,7 +112,7 @@ final class FrontendMenuProvider
 
     public function countFoods(): int
     {
-        return $this->entityManager->getRepository(Food::class)->count(['isEnabled' => true]);
+        return $this->entityManager->getRepository(Ingredienti::class)->count(['isEnabled' => true]);
     }
 
     public function countFoodCategories(): int
@@ -121,24 +122,27 @@ final class FrontendMenuProvider
 
     public function getFoods(): array
     {
-        $foods = $this->entityManager
-            ->getRepository(Food::class)
-            ->createQueryBuilder('food')
-            ->leftJoin('food.foodCategory', 'category')
-            ->leftJoin('food.allergens', 'allergen')
-            ->addSelect('category')
+        $ingredienti = $this->entityManager
+            ->getRepository(Ingredienti::class)
+            ->createQueryBuilder('ingredient')
+            ->leftJoin('ingredient.ingredientCategory', 'ingredientCategory')
+            ->leftJoin('ingredientCategory.foodCategories', 'directCategory')
+            ->leftJoin('ingredientCategory.foodCategory', 'legacyCategory')
+            ->leftJoin('ingredient.allergens', 'allergen')
+            ->addSelect('ingredientCategory')
+            ->addSelect('directCategory')
+            ->addSelect('legacyCategory')
             ->addSelect('allergen')
-            ->andWhere('food.isEnabled = :isEnabled')
-            ->andWhere('category.id IS NULL OR category.isActive = :categoryActive')
+            ->andWhere('ingredient.isEnabled = :isEnabled')
+            ->andWhere('ingredientCategory.id IS NULL OR ingredientCategory.isEnabled = :isEnabled')
             ->setParameter('isEnabled', true)
-            ->setParameter('categoryActive', true)
-            ->orderBy('food.isSpecial', 'DESC')
-            ->addOrderBy('category.displayOrder', 'ASC')
-            ->addOrderBy('food.name', 'ASC')
+            ->orderBy('legacyCategory.displayOrder', 'ASC')
+            ->addOrderBy('ingredientCategory.displayOrder', 'ASC')
+            ->addOrderBy('ingredient.name', 'ASC')
             ->getQuery()
             ->getResult();
 
-        return array_map(fn (Food $food): array => $this->mapFood($food), $foods);
+        return array_map(fn (Ingredienti $ingrediente): array => $this->mapIngredient($ingrediente), $ingredienti);
     }
 
     public function getFoodCategories(): array
@@ -156,11 +160,9 @@ final class FrontendMenuProvider
             ->getRepository(FoodCategory::class)
             ->findBy(['isActive' => true], ['displayOrder' => 'ASC', 'name' => 'ASC']);
 
-        $foods = $this->createEnabledFoodQueryBuilder()
-            ->andWhere('category.id IS NULL OR category.isActive = :categoryActive')
-            ->setParameter('categoryActive', true)
-            ->orderBy('food.isSpecial', 'DESC')
-            ->addOrderBy('category.displayOrder', 'ASC')
+        $foods = $this->createEnabledIngredientCategoryQueryBuilder()
+            ->orderBy('legacyCategory.displayOrder', 'ASC')
+            ->addOrderBy('food.displayOrder', 'ASC')
             ->addOrderBy('food.name', 'ASC')
             ->getQuery()
             ->getResult();
@@ -210,27 +212,31 @@ final class FrontendMenuProvider
         ];
     }
 
-    private function mapFood(Food $food): array
+    private function mapIngredientCategory(Food $food, ?FoodCategory $foodCategory = null): array
     {
-        $category = $food->getFoodCategory();
-        $categoryLabel = $category?->getName() ?? 'Senza categoria';
-        $imagePath = $food->getImageUrl();
+        return [
+            'name' => $food->getName() ?? 'Categoria ingredienti',
+            'description' => $food->getDescription() ?? '',
+            'ingredients' => $this->mapIngredients($food, $foodCategory),
+            'is_enabled' => $food->isEnabled(),
+        ];
+    }
+
+    private function mapIngredient(Ingredienti $ingrediente, ?FoodCategory $foodCategory = null): array
+    {
+        $ingredientCategory = $ingrediente->getIngredientCategory();
+        $foodCategory ??= $this->resolvePrimaryFoodCategory($ingredientCategory);
+        $categoryLabel = $foodCategory?->getName() ?? 'Senza categoria';
 
         return [
-            'name' => $food->getName() ?? 'Piatto',
-            'description' => $food->getDescription() ?? '',
-            'allergens' => $this->mapAllergens($food),
-            'price' => number_format((float) ($food->getPrice() ?? 0), 2, '.', ''),
+            'name' => $ingrediente->getName() ?? 'Ingrediente',
+            'description' => $ingrediente->getDescription() ?? '',
+            'allergens' => $this->mapAllergens($ingrediente),
+            'price' => number_format((float) ($ingrediente->getPrice() ?? 0), 2, '.', ''),
             'category' => strtolower($categoryLabel),
-            'category_slug' => $category !== null ? 'food-cat-'.($category->getId() ?? 0) : 'food-uncategorized',
-            'image' => $this->mediaStorage->resolvePublicUrl(
-                Food::class,
-                $imagePath,
-                'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80'
-            ),
-            'has_image' => $this->hasDisplayImage($imagePath),
-            'is_special' => $food->isSpecial(),
-            'is_enabled' => $food->isEnabled(),
+            'category_slug' => $foodCategory !== null ? 'food-cat-'.($foodCategory->getId() ?? 0) : 'food-uncategorized',
+            'has_image' => false,
+            'is_enabled' => $ingrediente->isEnabled(),
         ];
     }
 
@@ -318,17 +324,22 @@ final class FrontendMenuProvider
             ->setParameter('isEnabled', true);
     }
 
-    private function createEnabledFoodQueryBuilder(): QueryBuilder
+    private function createEnabledIngredientCategoryQueryBuilder(): QueryBuilder
     {
         return $this->entityManager
             ->getRepository(Food::class)
             ->createQueryBuilder('food')
-            ->leftJoin('food.foodCategory', 'category')
-            ->leftJoin('food.allergens', 'allergen')
-            ->addSelect('category')
+            ->leftJoin('food.foodCategory', 'legacyCategory')
+            ->leftJoin('food.foodCategories', 'directCategory')
+            ->leftJoin('food.ingredienti', 'ingredient', 'WITH', 'ingredient.isEnabled = :ingredientEnabled')
+            ->leftJoin('ingredient.allergens', 'allergen')
+            ->addSelect('legacyCategory')
+            ->addSelect('directCategory')
+            ->addSelect('ingredient')
             ->addSelect('allergen')
             ->andWhere('food.isEnabled = :isEnabled')
-            ->setParameter('isEnabled', true);
+            ->setParameter('isEnabled', true)
+            ->setParameter('ingredientEnabled', true);
     }
 
     /**
@@ -395,13 +406,101 @@ final class FrontendMenuProvider
     }
 
     /**
+     * @return list<array<string, mixed>>
+     */
+    private function mapIngredients(Food $food, ?FoodCategory $foodCategory = null): array
+    {
+        $ingredienti = array_filter(
+            $food->getIngredienti()->toArray(),
+            fn (Ingredienti $ingrediente): bool => $ingrediente->isEnabled()
+                && (
+                    $foodCategory === null
+                    || $this->ingredientCategoryMatchesFoodCategory($food, $foodCategory)
+                )
+        );
+
+        usort(
+            $ingredienti,
+            static fn (Ingredienti $first, Ingredienti $second): int => ($first->getName() ?? '') <=> ($second->getName() ?? '')
+        );
+
+        return array_map(fn (Ingredienti $ingrediente): array => $this->mapIngredient($ingrediente, $foodCategory), $ingredienti);
+    }
+
+    private function ingredientCategoryMatchesFoodCategory(Food $ingredientCategory, FoodCategory $foodCategory): bool
+    {
+        $directFoodCategories = $this->getActiveFoodCategoriesForIngredientCategory($ingredientCategory);
+        if ($directFoodCategories !== []) {
+            return $this->containsFoodCategory($directFoodCategories, $foodCategory);
+        }
+
+        $legacyFoodCategory = $ingredientCategory->getFoodCategory();
+
+        return $legacyFoodCategory !== null
+            && $legacyFoodCategory->isActive()
+            && $legacyFoodCategory->getId() === $foodCategory->getId();
+    }
+
+    private function resolvePrimaryFoodCategory(?Food $ingredientCategory): ?FoodCategory
+    {
+        if ($ingredientCategory === null) {
+            return null;
+        }
+
+        $directFoodCategories = $this->getActiveFoodCategoriesForIngredientCategory($ingredientCategory);
+        if ($directFoodCategories !== []) {
+            usort(
+                $directFoodCategories,
+                static fn (FoodCategory $first, FoodCategory $second): int => [
+                    $first->getDisplayOrder() ?? 0,
+                    $first->getName() ?? '',
+                ] <=> [
+                    $second->getDisplayOrder() ?? 0,
+                    $second->getName() ?? '',
+                ]
+            );
+
+            return $directFoodCategories[0];
+        }
+
+        $legacyFoodCategory = $ingredientCategory->getFoodCategory();
+
+        return $legacyFoodCategory?->isActive() === true ? $legacyFoodCategory : null;
+    }
+
+    /**
+     * @return list<FoodCategory>
+     */
+    private function getActiveFoodCategoriesForIngredientCategory(Food $ingredientCategory): array
+    {
+        return array_values(array_filter(
+            $ingredientCategory->getFoodCategories()->toArray(),
+            static fn (FoodCategory $foodCategory): bool => $foodCategory->isActive()
+        ));
+    }
+
+    /**
+     * @param list<FoodCategory> $foodCategories
+     */
+    private function containsFoodCategory(array $foodCategories, FoodCategory $needle): bool
+    {
+        foreach ($foodCategories as $foodCategory) {
+            if ($foodCategory->getId() === $needle->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return list<array{label: string, icon: ?string}>
      */
-    private function mapAllergens(Food $food): array
+    private function mapAllergens(Ingredienti $ingrediente): array
     {
         $mapped = [];
 
-        foreach ($food->getAllergens() as $allergen) {
+        foreach ($ingrediente->getAllergens() as $allergen) {
             $mapped[] = $this->mapAllergen($allergen);
         }
 
@@ -450,7 +549,7 @@ final class FrontendMenuProvider
     /**
      * @param list<FoodCategory> $categories
      * @param list<Food> $foods
-     * @return list<array{category: array<string, string>, foods: list<array<string, mixed>>}>
+     * @return list<array{category: array<string, string>, ingredientCategories: list<array<string, mixed>>, foods: list<array<string, mixed>>}>
      */
     private function groupFoodsByCategory(array $categories, array $foods): array
     {
@@ -463,17 +562,29 @@ final class FrontendMenuProvider
 
             $groups[$categoryId] = [
                 'category' => $this->mapFoodCategory($category),
+                'ingredientCategories' => [],
                 'foods' => [],
             ];
         }
 
         foreach ($foods as $food) {
-            $categoryId = $food->getFoodCategory()?->getId();
-            if ($categoryId === null || !array_key_exists($categoryId, $groups)) {
-                continue;
-            }
+            foreach ($categories as $category) {
+                $categoryId = $category->getId();
+                if ($categoryId === null || !array_key_exists($categoryId, $groups)) {
+                    continue;
+                }
 
-            $groups[$categoryId]['foods'][] = $this->mapFood($food);
+                $ingredientCategory = $this->mapIngredientCategory($food, $category);
+                if ($ingredientCategory['ingredients'] === []) {
+                    continue;
+                }
+
+                $groups[$categoryId]['ingredientCategories'][] = $ingredientCategory;
+                $groups[$categoryId]['foods'] = [
+                    ...$groups[$categoryId]['foods'],
+                    ...$ingredientCategory['ingredients'],
+                ];
+            }
         }
 
         return array_values($groups);

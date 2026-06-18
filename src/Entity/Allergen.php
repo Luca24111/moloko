@@ -21,9 +21,9 @@ class Allergen
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    /** @var Collection<int, Food> */
-    #[ORM\ManyToMany(targetEntity: Food::class, mappedBy: 'allergens')]
-    private Collection $foods;
+    /** @var Collection<int, Ingredienti> */
+    #[ORM\ManyToMany(targetEntity: Ingredienti::class, mappedBy: 'allergens')]
+    private Collection $ingredienti;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
@@ -36,7 +36,7 @@ class Allergen
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
         $this->updatedAt = $now;
-        $this->foods = new ArrayCollection();
+        $this->ingredienti = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -77,27 +77,27 @@ class Allergen
     }
 
     /**
-     * @return Collection<int, Food>
+     * @return Collection<int, Ingredienti>
      */
-    public function getFoods(): Collection
+    public function getIngredienti(): Collection
     {
-        return $this->foods;
+        return $this->ingredienti;
     }
 
-    public function addFood(Food $food): static
+    public function addIngredienti(Ingredienti $ingredienti): static
     {
-        if (!$this->foods->contains($food)) {
-            $this->foods->add($food);
-            $food->addAllergen($this);
+        if (!$this->ingredienti->contains($ingredienti)) {
+            $this->ingredienti->add($ingredienti);
+            $ingredienti->addAllergen($this);
         }
 
         return $this;
     }
 
-    public function removeFood(Food $food): static
+    public function removeIngredienti(Ingredienti $ingredienti): static
     {
-        if ($this->foods->removeElement($food)) {
-            $food->removeAllergen($this);
+        if ($this->ingredienti->removeElement($ingredienti)) {
+            $ingredienti->removeAllergen($this);
         }
 
         return $this;

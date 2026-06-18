@@ -31,7 +31,7 @@ $groupedFoods = $groupedFoods ?? [];
             <?php endif; ?>
 
             <?php foreach ($groupedFoods as $section): ?>
-                <?php $foods = $section['foods'] ?? []; ?>
+                <?php $ingredientCategories = $section['ingredientCategories'] ?? []; ?>
                 <section
                     class="food-page__section food-page__section--list"
                     id="<?= $e($section['category']['slug'] ?? 'section'); ?>"
@@ -42,14 +42,30 @@ $groupedFoods = $groupedFoods ?? [];
                         <p><?= $e($section['category']['description'] ?? 'Sapori semplici e curati da portare al tavolo con un drink.'); ?></p>
                     </div>
 
-                    <?php if (empty($section['foods'])): ?>
+                    <?php if (empty($ingredientCategories)): ?>
                         <p class="food-page__empty">Questa proposta tornera presto in carta.</p>
                     <?php else: ?>
-                        <?php $include('components/drink_grid.php', [
-                            'drinks' => $foods,
-                            'showImages' => false,
-                            'layout' => 'list',
-                        ]); ?>
+                        <?php foreach ($ingredientCategories as $ingredientCategory): ?>
+                            <?php $ingredients = $ingredientCategory['ingredients'] ?? []; ?>
+                            <div class="food-page__ingredient-category">
+                                <div class="food-page__ingredient-category-head">
+                                    <h4><?= $e($ingredientCategory['name'] ?? 'Categoria ingredienti'); ?></h4>
+                                    <?php if (($ingredientCategory['description'] ?? '') !== ''): ?>
+                                        <p><?= $e($ingredientCategory['description']); ?></p>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php if (empty($ingredients)): ?>
+                                    <p class="food-page__empty">Gli ingredienti saranno disponibili a breve.</p>
+                                <?php else: ?>
+                                    <?php $include('components/drink_grid.php', [
+                                        'drinks' => $ingredients,
+                                        'showImages' => false,
+                                        'layout' => 'list',
+                                    ]); ?>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
                     <?php endif; ?>
                 </section>
             <?php endforeach; ?>

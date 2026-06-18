@@ -34,7 +34,6 @@ $placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABA
                             decoding="async"
                             fetchpriority="low"
                         >
-                        <span class="home-page__link-eyebrow"><?= $e($item['eyebrow'] ?? 'Link'); ?></span>
                     </a>
                 <?php endforeach; ?>
             </div>
