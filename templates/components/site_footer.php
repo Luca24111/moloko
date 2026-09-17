@@ -34,7 +34,7 @@ $placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABA
                 <span class="site-footer__icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" focusable="false"><path d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1-.24 11.37 11.37 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.49a1 1 0 0 1 1 1 11.37 11.37 0 0 0 .57 3.57 1 1 0 0 1-.24 1Z" fill="currentColor"/></svg>
                 </span>
-                <a href="tel:+3903761689042">0376 168 9042</a>
+                <a href="tel:+393534128127">353 412 8127</a>
             </li>
             <li>
                 <span class="site-footer__icon" aria-hidden="true">
